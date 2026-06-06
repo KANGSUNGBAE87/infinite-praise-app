@@ -2,11 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 하루 한 줄 기록을 받아 Claude Haiku로 근거 기반 칭찬을 생성하고, 30일 후 월말 리빌로 "사실 당신은 꾸준한 사람"이라는 사실을 보여주는 iOS 앱 MVP.
+**Goal:** 하루 한 줄 기록을 받아 Claude Haiku로 근거 기반 칭찬을 생성하고, 30일 후 월말 리빌로 "사실 당신은 꾸준한 사람"이라는 사실을 보여주는 미니앱 MVP.
 
-**Architecture:** 앱인토스 스크린 기반 빌더. 데이터는 기기 로컬 JSON 저장소. 칭찬 생성은 Claude Haiku API 호출 (온라인 전용). 빈 날은 LLM 호출 없이 로컬 집계만으로 처리.
+**Architecture:** 앱인토스(Apps in Toss) = 토스 슈퍼앱 내 React Native 미니앱(`@apps-in-toss/framework`). 플랫폼 의존부(인증·결제·저장)는 어댑터 인터페이스로 분리해 구글플레이 독립 앱 이식성 확보. 칭찬 생성은 **백엔드 프록시 경유** Claude Haiku 호출(앱에 API key 미보관). 빈 날은 LLM 호출 없이 로컬 집계만으로 처리.
 
-**Tech Stack:** 앱인토스 (UI + 로직), Claude Haiku API (claude-haiku-4-5-20251001), Anthropic SDK / REST API, 앱인토스 내장 localStorage
+**Tech Stack:** React Native + `@apps-in-toss/framework`, TypeScript, 백엔드 프록시(Cloudflare Workers/Vercel/Supabase Edge Functions 중 택1) + Anthropic SDK, 모델 `claude-haiku-4-5`. 저장은 `StorageAdapter` 추상화(앱인토스 저장소 ↔ AsyncStorage).
+
+> ⚠️ **보안 불변 규칙:** Anthropic API key는 백엔드 환경변수에만 둔다. 클라이언트(RN 번들)에서 `x-api-key`로 직접 호출 금지 — 번들/트래픽에서 키 추출 시 비용 폭탄.
 
 ---
 
@@ -47,6 +49,14 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 // 형식: DailyEntry[] (JSON 배열)
 ```
 
+> **플랫폼 해석 메모 (Task 1~9 공통):** 아래 Task들은 빠른 초안이라 "앱인토스 스크린/전역 함수 블록", `localStorage` 같은 표현을 쓴다. 실제 구현은 **React Native + `@apps-in-toss/framework`** 기준으로 다음과 같이 읽는다.
+> - "앱인토스 스크린" → RN 화면 컴포넌트 (`screens/Home.tsx` 등)
+> - "전역 함수 블록 `storage.js`" → `src/services/storage.ts` (TypeScript 모듈)
+> - `localStorage` → **`StorageAdapter`** 인터페이스 경유. 앱인토스 구현체는 프레임워크 저장 API, 구글플레이 구현체는 `@react-native-async-storage/async-storage`. 비즈니스 로직은 어댑터만 의존 → 이식 시 구현체만 교체.
+> - `navigateTo(...)` → React Navigation
+>
+> 즉 로직/검증 단계는 그대로 유효하고, 호출 대상만 어댑터로 추상화한다.
+
 ---
 
 ## Task 0: Claude API 연결 검증 (프롬프트 실험)
@@ -57,19 +67,18 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 - Create: `ai/prompts/praise-v1.txt` (프롬프트 초안)
 - Create: `ai/prompts/praise-test-cases.md` (테스트 케이스 20개)
 
-- [ ] **Step 1: Anthropic API 키 준비 확인**
+- [ ] **Step 1: Anthropic API 키 준비 확인 (로컬 검증 전용)**
 
-  앱인토스 → 설정 → 외부 API 키 등록 화면에서 `ANTHROPIC_API_KEY` 등록.
-  
-  등록 안 됐으면: https://console.anthropic.com → API Keys → Create Key.
+  https://console.anthropic.com → API Keys → Create Key. 키는 **로컬 환경변수에만** 두고, 절대 앱 코드/번들에 넣지 않는다. (실제 앱은 Task 4의 백엔드 프록시를 경유.)
   
   확인 명령 (로컬 터미널에서):
   ```bash
+  export ANTHROPIC_API_KEY=sk-ant-...
   curl https://api.anthropic.com/v1/messages \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
     -H "content-type: application/json" \
-    -d '{"model":"claude-haiku-4-5-20251001","max_tokens":10,"messages":[{"role":"user","content":"hello"}]}'
+    -d '{"model":"claude-haiku-4-5","max_tokens":10,"messages":[{"role":"user","content":"hello"}]}'
   ```
   Expected: `{"content":[{"type":"text","text":"..."}],...}` (HTTP 200)
 
@@ -151,7 +160,7 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
     -H "anthropic-version: 2023-06-01" \
     -H "content-type: application/json" \
     -d '{
-      "model": "claude-haiku-4-5-20251001",
+      "model": "claude-haiku-4-5",
       "max_tokens": 200,
       "messages": [{
         "role": "user",
@@ -532,22 +541,41 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 
 ---
 
-## Task 4: Claude API 칭찬 생성 함수
+## Task 4: 백엔드 프록시 — 칭찬 생성 API (⚠️ API key는 여기에만)
 
-**목표:** Task 0에서 검증한 프롬프트로 실제 API 호출. 응답 ≤ 3초. 오프라인 시 graceful 처리.
+**목표:** Anthropic API key를 숨기는 서버리스 프록시. 클라이언트는 이 엔드포인트만 호출하고, 키는 절대 받지 않는다. Cloudflare Workers 예시(Vercel/Supabase Edge도 동일 패턴).
 
 **Files:**
-- Create: 앱인토스 → 전역 함수 블록 `praiseGenerator.js`
+- Create: `backend/wrangler.toml`
+- Create: `backend/src/index.ts`
 
-- [ ] **Step 1: generatePraise 함수 작성**
+- [ ] **Step 1: 프로젝트 초기화**
 
-  ```javascript
-  async function generatePraise(entry, category) {
-    // 영수증 데이터 준비
-    const stats = getMonthlyStats(category);
-    const streak = getCurrentStreak() + 1;  // 오늘 기록하면 +1
-    
-    const prompt = `당신은 사용자의 하루 기록을 보고 진심 어린 칭찬을 하는 친구입니다.
+  ```bash
+  npm create cloudflare@latest backend -- --type=hello-world
+  cd backend
+  # API key를 시크릿으로 등록 (코드/깃에 절대 안 들어감)
+  npx wrangler secret put ANTHROPIC_API_KEY
+  # 프롬프트에 sk-ant-... 붙여넣기
+  ```
+
+- [ ] **Step 2: 프록시 핸들러 작성**
+
+  `backend/src/index.ts`:
+  ```typescript
+  interface Env {
+    ANTHROPIC_API_KEY: string;
+  }
+
+  interface PraiseRequest {
+    entry: string;
+    category: string;
+    monthly_count: number;
+    streak: number;
+    total_monthly: number;
+  }
+
+  const PROMPT = (r: PraiseRequest) => `당신은 사용자의 하루 기록을 보고 진심 어린 칭찬을 하는 친구입니다.
 
 규칙 (절대 어기지 마세요):
 1. 반드시 아래 [데이터]에서 실제 숫자를 인용해야 합니다. 예: "(이번 달 8번째 운동)"
@@ -559,76 +587,150 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 7. 마지막에 반드시 괄호로 근거를 붙이세요. 예: "(이번 달 14번째 기록)"
 
 [데이터]
-- 오늘 기록: ${entry}
-- 카테고리: ${category}
-- 이번 달 ${category} 기록 횟수: ${stats.monthly_count + 1}회
-- 오늘까지 연속 기록일: ${streak}일
-- 이번 달 전체 기록 횟수: ${stats.total_monthly + 1}회
+- 오늘 기록: ${r.entry}
+- 카테고리: ${r.category}
+- 이번 달 ${r.category} 기록 횟수: ${r.monthly_count}회
+- 오늘까지 연속 기록일: ${r.streak}일
+- 이번 달 전체 기록 횟수: ${r.total_monthly}회
 
 위 데이터를 바탕으로 칭찬 한 단락을 한국어로 작성하세요.`;
-    
-    const apiKey = getConfig("ANTHROPIC_API_KEY");  // 앱인토스 설정에서 읽기
-    
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+
+  export default {
+    async fetch(req: Request, env: Env): Promise<Response> {
+      if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+
+      // TODO(V2): 토스/Firebase 인증 토큰 검증 + 사용자별 rate limit (남용 차단)
+      let body: PraiseRequest;
+      try {
+        body = await req.json();
+      } catch {
+        return new Response(JSON.stringify({ error: "bad_request" }), { status: 400 });
+      }
+      if (!body.entry || !body.category) {
+        return new Response(JSON.stringify({ error: "missing_fields" }), { status: 400 });
+      }
+
+      const upstream = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": env.ANTHROPIC_API_KEY,  // ← 서버 시크릿. 클라이언트는 절대 못 봄
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5",
+          max_tokens: 200,
+          messages: [{ role: "user", content: PROMPT(body) }],
+        }),
+      });
+
+      if (!upstream.ok) {
+        return new Response(JSON.stringify({ error: "upstream_error" }), { status: 502 });
+      }
+      const data = await upstream.json() as { content: { text: string }[] };
+      const praise = data.content[0].text.trim();
+      return new Response(JSON.stringify({ praise }), {
+        headers: { "content-type": "application/json" },
+      });
+    },
+  };
+  ```
+
+- [ ] **Step 3: 로컬 실행 + 검증 (Task 0 케이스 3개 재현)**
+
+  ```bash
+  npx wrangler dev
+  # 다른 터미널에서:
+  curl -X POST http://localhost:8787 -H "content-type: application/json" \
+    -d '{"entry":"운동 30분","category":"운동","monthly_count":8,"streak":5,"total_monthly":12}'
+  ```
+  확인:
+  - [ ] `{"praise":"...(이번 달 N번째...)"}` 형태로 응답
+  - [ ] 숫자 인용 포함, 마지막 괄호 근거
+  - [ ] 응답 본문에 API key가 절대 노출되지 않음
+
+- [ ] **Step 4: 배포 + 엔드포인트 URL 확보**
+
+  ```bash
+  npx wrangler deploy
+  # 출력된 https://<worker>.workers.dev URL을 Task 4b의 PRAISE_API_URL로 사용
+  git add backend/ && git commit -m "feat: backend praise proxy (Cloudflare Worker, hides API key)"
+  ```
+
+---
+
+## Task 4b: 클라이언트 칭찬 호출 (앱 → 백엔드)
+
+**목표:** 앱은 백엔드 프록시만 호출. 응답 ≤ 3초, 오프라인 시 graceful 처리. API key 미보관.
+
+**Files:**
+- Create: `src/services/praiseClient.ts`
+
+- [ ] **Step 1: generatePraise 함수 작성 (백엔드 호출)**
+
+  ```typescript
+  const PRAISE_API_URL = "https://<worker>.workers.dev";  // Task 4 Step 4의 배포 URL
+
+  export async function generatePraise(entry: string, category: Category): Promise<string> {
+    const stats = getMonthlyStats(category);
+    const streak = getCurrentStreak() + 1;  // 오늘 기록하면 +1
+
+    const res = await fetch(PRAISE_API_URL, {
       method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
-      },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 200,
-        messages: [{ role: "user", content: prompt }]
-      })
+        entry,
+        category,
+        monthly_count: stats.monthly_count + 1,
+        streak,
+        total_monthly: stats.total_monthly + 1,
+      }),
     });
-    
-    if (!response.ok) {
-      throw new Error("API 오류: " + response.status);
-    }
-    
-    const data = await response.json();
-    return data.content[0].text.trim();
+    if (!res.ok) throw new Error("praise_api_error:" + res.status);
+    const data = await res.json() as { praise: string };
+    return data.praise;
   }
   ```
 
 - [ ] **Step 2: 타임아웃 처리 추가**
 
-  3초 초과 시 reject:
-  
-  ```javascript
-  async function generatePraiseWithTimeout(entry, category) {
-    const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("timeout")), 3000)
-    );
-    return Promise.race([generatePraise(entry, category), timeout]);
+  3초 초과 시 reject (AbortController 권장):
+  ```typescript
+  export async function generatePraiseWithTimeout(entry: string, category: Category): Promise<string> {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 3000);
+    try {
+      const res = await fetch(PRAISE_API_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(buildPayload(entry, category)),
+        signal: ctrl.signal,
+      });
+      if (!res.ok) throw new Error("praise_api_error:" + res.status);
+      return (await res.json() as { praise: string }).praise;
+    } finally {
+      clearTimeout(t);
+    }
   }
   ```
-  
-  Task 3의 `btn_save` onClick에서 `generatePraise` 대신 `generatePraiseWithTimeout` 호출로 교체.
+  Task 3의 저장 버튼 onClick에서 `generatePraiseWithTimeout` 호출. 실패/타임아웃 시 `praise=""` + offline 플래그로 저장(이미 Task 3에 구현됨).
 
-- [ ] **Step 3: 실제 호출 테스트 (Task 0 케이스 3개 재검증)**
+- [ ] **Step 3: 실제 호출 테스트**
 
-  앱인토스 콘솔에서:
-  ```javascript
-  // 케이스 1
-  generatePraiseWithTimeout("운동 30분", "운동").then(r => console.log(r));
-  // 케이스 2
-  generatePraiseWithTimeout("코딩 2시간", "일").then(r => console.log(r));
-  // 케이스 3
-  generatePraiseWithTimeout("친구랑 통화함", "관계").then(r => console.log(r));
+  ```typescript
+  generatePraiseWithTimeout("운동 30분", "운동").then(console.log);
+  generatePraiseWithTimeout("코딩 2시간", "일").then(console.log);
+  generatePraiseWithTimeout("친구랑 통화함", "관계").then(console.log);
   ```
-  
-  각 결과 확인:
-  - [ ] 숫자 인용 포함
-  - [ ] 3초 이내 응답
-  - [ ] 마지막에 괄호 근거
+  확인:
+  - [ ] 숫자 인용 포함 / 3초 이내 응답 / 마지막 괄호 근거
+  - [ ] 비행기 모드 → 3초 후 graceful 실패 (앱 크래시 없음)
 
 - [ ] **Step 4: 커밋**
 
   ```bash
-  git add .
-  git commit -m "feat: Claude Haiku praise generation with timeout + offline fallback"
+  git add src/services/praiseClient.ts
+  git commit -m "feat: client praise via backend proxy (no API key on device)"
   ```
 
 ---
@@ -909,17 +1011,18 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
   }
   ```
 
-- [ ] **Step 2: 월간 리빌 LLM 요약 생성 함수**
+- [ ] **Step 2: 월간 리빌 LLM 요약 — 백엔드에 엔드포인트 추가**
 
-  `praiseGenerator.js`에 추가:
-  
-  ```javascript
-  async function generateMonthlyReveal(stats) {
-    const categoryList = Object.entries(stats.categoryCounts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([cat, cnt]) => cat + " " + cnt + "회")
-      .join(", ");
-    
+  칭찬과 동일하게 **백엔드 프록시 경유**. Task 4 Worker에 `/reveal` 경로를 추가하고, 클라이언트는 그 경로만 호출한다.
+
+  **(2a) 백엔드** `backend/src/index.ts` — `fetch` 핸들러 상단에서 경로 분기:
+  ```typescript
+  const url = new URL(req.url);
+  if (url.pathname === "/reveal") {
+    const s = await req.json() as {
+      monthName: string; totalDays: number;
+      categoryList: string; maxStreak: number;
+    };
     const prompt = `당신은 사용자의 한 달 기록을 보고 진심 어린 총평을 하는 친구입니다.
 
 규칙:
@@ -928,30 +1031,51 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 3. 타인 비교 금지.
 4. 3-4문장. 마지막 문장은 정체성 언어로 마무리.
 
-[${stats.monthName} 기록 데이터]
-- 총 기록일: ${stats.totalDays}일
-- 카테고리별: ${categoryList}
-- 최장 연속 기록: ${stats.maxStreak}일
+[${s.monthName} 기록 데이터]
+- 총 기록일: ${s.totalDays}일
+- 카테고리별: ${s.categoryList}
+- 최장 연속 기록: ${s.maxStreak}일
 
-위 데이터를 바탕으로 ${stats.monthName} 총평을 한국어로 작성하세요.`;
-    
-    const apiKey = getConfig("ANTHROPIC_API_KEY");
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+위 데이터를 바탕으로 ${s.monthName} 총평을 한국어로 작성하세요.`;
+    const up = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        "x-api-key": apiKey,
+        "x-api-key": env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
-        "content-type": "application/json"
+        "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
+        model: "claude-haiku-4-5",
         max_tokens: 300,
-        messages: [{ role: "user", content: prompt }]
-      })
+        messages: [{ role: "user", content: prompt }],
+      }),
     });
-    
-    const data = await response.json();
-    return data.content[0].text.trim();
+    const d = await up.json() as { content: { text: string }[] };
+    return new Response(JSON.stringify({ reveal: d.content[0].text.trim() }), {
+      headers: { "content-type": "application/json" },
+    });
+  }
+  ```
+
+  **(2b) 클라이언트** `src/services/praiseClient.ts`에 추가:
+  ```typescript
+  export async function generateMonthlyReveal(stats: LastMonthStats): Promise<string> {
+    const categoryList = Object.entries(stats.categoryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat, cnt]) => `${cat} ${cnt}회`)
+      .join(", ");
+    const res = await fetch(PRAISE_API_URL + "/reveal", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        monthName: stats.monthName,
+        totalDays: stats.totalDays,
+        categoryList,
+        maxStreak: stats.maxStreak,
+      }),
+    });
+    if (!res.ok) throw new Error("reveal_api_error:" + res.status);
+    return (await res.json() as { reveal: string }).reveal;
   }
   ```
 
@@ -1183,9 +1307,10 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 
 - [ ] **Step 3: 프라이버시 설정 확인**
 
-  - 기록 데이터가 서버로 전송되지 않음 확인 (로컬 저장 only)
-  - Claude API 호출 시 전송 데이터: 기록 텍스트 + 통계 수치만 (사용자 식별 정보 없음)
-  - 앱인토스 → 프라이버시 정책: "기록은 기기에만 저장됩니다" 명시
+  - 기록 원본은 기기 로컬 저장(StorageAdapter) — 서버 DB에 저장하지 않음
+  - 칭찬 생성 시 **백엔드 프록시로 전송되는 데이터**: 기록 텍스트 + 통계 수치만 (사용자 식별 정보 없음). 백엔드는 이를 Claude로 중계만 하고 저장하지 않음
+  - 백엔드에 **Anthropic API key가 시크릿으로만 존재**하는지 확인 (`wrangler secret list`), 클라이언트 번들에 키 문자열 0건인지 grep으로 확인
+  - 앱인토스 프라이버시 정책: "기록은 기기에 저장되며, 칭찬 생성을 위해 익명 통계만 서버로 전송됩니다" 명시
 
 - [ ] **Step 4: 최종 기능 체크리스트**
 
@@ -1205,16 +1330,17 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 | Task | 내용 | 예상 시간 |
 |------|------|---------|
 | 0 | 프롬프트 검증 | 2-3시간 |
-| 1 | 데이터 저장소 | 2시간 |
+| 1 | 데이터 저장소 (StorageAdapter) | 2시간 |
 | 2 | 카테고리 분류 | 1시간 |
 | 3 | 기록 입력 화면 | 3시간 |
-| 4 | Claude API 연결 | 2시간 |
+| 4 | 백엔드 프록시 (API key 은닉) | 2-3시간 |
+| 4b | 클라이언트 칭찬 호출 | 1시간 |
 | 5 | 칭찬 + 빈 날 화면 | 3시간 |
 | 6 | 히스토리 화면 | 2시간 |
-| 7 | 월말 리빌 | 3시간 |
+| 7 | 월말 리빌 (+ /reveal 엔드포인트) | 3시간 |
 | 8 | QA | 2시간 |
 | 9 | 제출 준비 | 1시간 |
-| **합계** | | **21시간 (약 3-4일)** |
+| **합계** | | **23-24시간 (약 4일)** |
 
 ---
 
@@ -1222,13 +1348,16 @@ type Category = "운동" | "일" | "관계" | "학습" | "휴식";
 
 ### 스펙 커버리지
 - [x] F1 기록 입력 → Task 3
-- [x] F2 칭찬 생성 → Task 0, 4
+- [x] F2 칭찬 생성 → Task 0(프롬프트 검증), 4(백엔드), 4b(클라이언트)
 - [x] F3 주간 요약/스트릭 → Task 6
 - [x] F4 월말 리빌 → Task 7
 - [x] 빈 날 처리 → Task 5 (Screen_Empty)
-- [x] 오프라인 처리 → Task 3, 4
+- [x] 오프라인 처리 → Task 3, 4b
 - [x] 카테고리 자동 태그 → Task 2, 3
 - [x] LLM 프롬프트 규칙 (영수증 강제) → Task 0, 4
+- [x] API key 은닉 (백엔드 프록시) → Task 4
+- [x] 구글플레이 이식성 (어댑터 패턴) → 플랫폼 해석 메모 + 기술스택
+- [x] 로그인/결제/광고 설계 → 제품 스펙 수익화 섹션
 
 ### 플레이스홀더 스캔
 없음. 모든 단계에 실제 코드 포함.
