@@ -1,5 +1,9 @@
 # 잘하고 있음 — MVP 구현 계획 (앱인토스)
 
+> Superseded on 2026-06-06.
+> 이 문서는 LLM/백엔드 중심의 초기 구현안이다. 현재 기준 구현 계획은
+> `ai/plans/2026-06-06-non-llm-tts-implementation-plan.md` 이다.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 하루 한 줄 기록을 받아 Claude Haiku로 근거 기반 칭찬을 생성하고, 30일 후 월말 리빌로 "사실 당신은 꾸준한 사람"이라는 사실을 보여주는 미니앱 MVP.
