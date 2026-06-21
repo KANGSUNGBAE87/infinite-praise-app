@@ -1,0 +1,2752 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "03ebb0d889c0c6b1658044d3c17891094faab401",
+  "generatedAt": "2026-06-18T16:20:11.003Z",
+  "files": {
+    ".agents/skills/graphify/.graphify_version": {
+      "filePath": ".agents/skills/graphify/.graphify_version",
+      "contentHash": "e7f1bf29b4e159e6291e2054fa9fecaa2e98a897a161651d01a8eb867f92af61",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    ".agents/skills/graphify/SKILL.md": {
+      "filePath": ".agents/skills/graphify/SKILL.md",
+      "contentHash": "474506aceae8b702f137ae786de3afa2b5edfbbf133722622f143c86935da777",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1318,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/CLAUDE.md": {
+      "filePath": ".claude/CLAUDE.md",
+      "contentHash": "c3e43ea0f68fbf7127e6b128a31c737f6908fde51b03dd441bf5cd806b325b09",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/settings.json": {
+      "filePath": ".claude/settings.json",
+      "contentHash": "c95d9f3b15d3409b2a2b8d4307b499b4f68b8118edd94a012c75d6c950d3b1d4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    ".claude/skills/graphify/.graphify_version": {
+      "filePath": ".claude/skills/graphify/.graphify_version",
+      "contentHash": "e7f1bf29b4e159e6291e2054fa9fecaa2e98a897a161651d01a8eb867f92af61",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    ".claude/skills/graphify/SKILL.md": {
+      "filePath": ".claude/skills/graphify/SKILL.md",
+      "contentHash": "f98911f007a567007484f71f4a5754f9158360b55fe15a97431f2cf403af7095",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1157,
+      "hasStructuralAnalysis": true
+    },
+    ".codex/hooks.json": {
+      "filePath": ".codex/hooks.json",
+      "contentHash": "da85df404eb9c20062592e52112fe5d4efdad237aec439b6dbb9a8205b94e5ce",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    ".env.example": {
+      "filePath": ".env.example",
+      "contentHash": "094d516790369a927834fc9bb2f828398ae6f113968f05d87d361112648a2414",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    ".graphifyignore": {
+      "filePath": ".graphifyignore",
+      "contentHash": "cab1b2f25aea7b8f8ae357460f0fa3cc4f0aef166c0525bdbc14b02f6aed1258",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "d0c31c6572c66a4e592730fb2707a2df4010d2da9118e0c6e8a4c604744caf4a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/config.json": {
+      "filePath": ".understand-anything/config.json",
+      "contentHash": "b52c88617e1d5364c49ee915eccc5185b1e23c4d0f01ac167b75868f1b16fbc0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/knowledge-graph.json": {
+      "filePath": ".understand-anything/knowledge-graph.json",
+      "contentHash": "3ada9fc2f4fa2206f5d17fdfd39dce3263f52e8efbf14831f4caa464fbd48dfb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26673,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/meta.json": {
+      "filePath": ".understand-anything/meta.json",
+      "contentHash": "2102a0b6eea4f1c3ccf171f975845ec9deeb527628c5ff31d26970bbb62f6dc9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "f59fb612d9dae03fb797d3673e7b2f237eb3f2133d880c80e62a583770a077e0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-06-implementation-plan.md": {
+      "filePath": "ai/plans/2026-06-06-implementation-plan.md",
+      "contentHash": "17307230d6bd31684ce7d2cb65e70fbbfbf49489813a9a67e9e4c718cb96c39f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1381,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-06-non-llm-tts-implementation-plan.md": {
+      "filePath": "ai/plans/2026-06-06-non-llm-tts-implementation-plan.md",
+      "contentHash": "3362384b6a87997484e5ab19de78448d6f7535c84e9025e43503021de2d499f4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 239,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-06-product-spec.md": {
+      "filePath": "ai/plans/2026-06-06-product-spec.md",
+      "contentHash": "aab17975aeaf1b32515bc7076637ed7d4cb4254ca105125a6cbd6094e9a7f2d9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 334,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-06-situation-emotion-tts-spec.md": {
+      "filePath": "ai/plans/2026-06-06-situation-emotion-tts-spec.md",
+      "contentHash": "567a27170330695361d032ece01036ad234fa43bb17bd9e46f51804b2c61e5ac",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 186,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-drama-dialogue-praise-research.md": {
+      "filePath": "ai/plans/2026-06-07-drama-dialogue-praise-research.md",
+      "contentHash": "072df3d34f95a3e155f91b8ebb619ca44f7c040db31ef80c2d899180b0f18b76",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 225,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-famous-line-scene-ux-product-review.md": {
+      "filePath": "ai/plans/2026-06-07-famous-line-scene-ux-product-review.md",
+      "contentHash": "c69fc50c3c8d36636345fd33113cd564eb229f5d2a242fb90fdc0ff302a22355",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 290,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-famous-lines-quote-pack-research.md": {
+      "filePath": "ai/plans/2026-06-07-famous-lines-quote-pack-research.md",
+      "contentHash": "a62951e1cc989717a6acd101f440b1d7f5593625f8cf82d2cdf393c835efafc8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 191,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-gemini-tts-cli-prep.md": {
+      "filePath": "ai/plans/2026-06-07-gemini-tts-cli-prep.md",
+      "contentHash": "3f316a190119a3b284bea0cef4a5f7e3f69e52422c02d9b1fd4e21d580595306",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 79,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-instant-one-line-mvp-plan.md": {
+      "filePath": "ai/plans/2026-06-07-instant-one-line-mvp-plan.md",
+      "contentHash": "84980a75850ec3da6ce2f4fa3af2f8023d2e090add1359f0a396a66c4a0ef4a3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 220,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-instant-one-line-mvp-review.md": {
+      "filePath": "ai/plans/2026-06-07-instant-one-line-mvp-review.md",
+      "contentHash": "bf37e00033eabdcbadf9cc78b0891508c47a3f570547877b2496c732e99f690d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 257,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-market-research-habit-focus-apps.md": {
+      "filePath": "ai/plans/2026-06-07-market-research-habit-focus-apps.md",
+      "contentHash": "97ad828d2636b2e0b85655cba993278f57954f5b7e01ab5bc6f52a8003e655d2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-mental-one-line-category-research.md": {
+      "filePath": "ai/plans/2026-06-07-mental-one-line-category-research.md",
+      "contentHash": "6595fc71f3c7ef44e85d1c1c0f5ffe0111120146427ff109396a2ba6290c1580",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 181,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-product-brief-v0.1.md": {
+      "filePath": "ai/plans/2026-06-07-product-brief-v0.1.md",
+      "contentHash": "2f488196488f86412bb397a490326373a978889876ceaaa830a40ab0610a738d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 401,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-product-spec-v2-companion.md": {
+      "filePath": "ai/plans/2026-06-07-product-spec-v2-companion.md",
+      "contentHash": "f5b9937e38ae9a75b4e77d5d629e6d5630117eff132515bb7c4d93c0a632b5cf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 213,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-scene-choice-copy-draft.md": {
+      "filePath": "ai/plans/2026-06-07-scene-choice-copy-draft.md",
+      "contentHash": "22376a8387141063af305bf83d29cc174f44b7efabc9e93a5c7b7eedf475ea0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-07-ui-product-upgrade-plan.md": {
+      "filePath": "ai/plans/2026-06-07-ui-product-upgrade-plan.md",
+      "contentHash": "3b9252d194366e89ce94849e459aec3339c217e68d8f4628c0be0ee1c83faea3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 222,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-08-gpt-opinion-review.md": {
+      "filePath": "ai/plans/2026-06-08-gpt-opinion-review.md",
+      "contentHash": "1043ebd16c368776836972e4e0a5d31d239ff5db7374bf7f831299413b7f51ac",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-08-praise-me-mvp-spec.md": {
+      "filePath": "ai/plans/2026-06-08-praise-me-mvp-spec.md",
+      "contentHash": "e460884a374562608982d32daab1d426b2c972e679098cc13d046a5166e25654",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 354,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-13-local-audio-script-final.md": {
+      "filePath": "ai/plans/2026-06-13-local-audio-script-final.md",
+      "contentHash": "f728098421ba691f91f7aff6d45c9436690104637114f9c8ba8f3a8140c2678c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-13-local-audio-script-v0.1.md": {
+      "filePath": "ai/plans/2026-06-13-local-audio-script-v0.1.md",
+      "contentHash": "71947f3ce5894a3884cec262bda8bce1629c92c618eb493d8efc75d4a7deb393",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-13-praise-me-design-brief.md": {
+      "filePath": "ai/plans/2026-06-13-praise-me-design-brief.md",
+      "contentHash": "bdb1ef92b5ecf435af1a5e6e39fc98b7398d214292731819b90bb011e914f3b8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 199,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-13-praise-me-product-planning-review.md": {
+      "filePath": "ai/plans/2026-06-13-praise-me-product-planning-review.md",
+      "contentHash": "f5a38ac8882aceedf17ec7308860943ebe3ae1ce7d5ea2705403b44179a60c14",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 362,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/2026-06-15-praise-nag-reminder-pivot-draft.md": {
+      "filePath": "ai/plans/2026-06-15-praise-nag-reminder-pivot-draft.md",
+      "contentHash": "15cb4e144a8a881ec6bb39d231073bcf59aa354968e23a5951a7c26850717bb3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 331,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/implementation-plan.md": {
+      "filePath": "ai/plans/implementation-plan.md",
+      "contentHash": "1bbe3c59461aa03049eba257cfbd2fe8da63e2dad84455207652d35fa72e78d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 715,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/product-plan.md": {
+      "filePath": "ai/plans/product-plan.md",
+      "contentHash": "c761473130ede2c86659fb122b467278ec4dcb820ef97f39d9ace7f178143bb4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 550,
+      "hasStructuralAnalysis": true
+    },
+    "ai/plans/README.md": {
+      "filePath": "ai/plans/README.md",
+      "contentHash": "5fa90941fbebde6f7bc4eec65200bb39ec657c1bb629668ffe1199f8034e5146",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "ai/README.md": {
+      "filePath": "ai/README.md",
+      "contentHash": "0767c0e2d0c688f868af9f7e4e532d3178eca657775e8690450eff11089f425a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "ai/reviews/README.md": {
+      "filePath": "ai/reviews/README.md",
+      "contentHash": "b481a4514f56bb6ad485dbfd84f5ad8bf38082fcfb3fcb611b4acf515fb30b67",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "ai/reviews/review.md": {
+      "filePath": "ai/reviews/review.md",
+      "contentHash": "4571003fdd2325a1ea1705fec93ffc39f067981cbc063b53092bf8ebe03d7e0e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 211,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-06-app-i18n-default.md": {
+      "filePath": "ai/session-logs/2026-06-06-app-i18n-default.md",
+      "contentHash": "7091af3c5e43ae6e7b9d47efeedaac2dc11cd2e23c7f6d35bf72aa6ecae37240",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-06-app-platform-standard.md": {
+      "filePath": "ai/session-logs/2026-06-06-app-platform-standard.md",
+      "contentHash": "ee2bbda13d9d7ee83be2e89a28471ce99584f5edf9f4c88e91a1e85179656dce",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-06-direct-praise-tts-pivot.md": {
+      "filePath": "ai/session-logs/2026-06-06-direct-praise-tts-pivot.md",
+      "contentHash": "94082f9aaec07a0da446251597ca18f490eac07f20fa73dadefac6e02fe4f2e2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-core-implementation-start.md": {
+      "filePath": "ai/session-logs/2026-06-07-core-implementation-start.md",
+      "contentHash": "c03b689667a39d9ba3c685f6e86ef726e7b07b6223ec8555138df1cbae7fb2e4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 85,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-drama-dialogue-research.md": {
+      "filePath": "ai/session-logs/2026-06-07-drama-dialogue-research.md",
+      "contentHash": "884877a629870766525c545fe9e2594ddfa19fd386d6d321c9d2f68891cbbee9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-english-title.md": {
+      "filePath": "ai/session-logs/2026-06-07-english-title.md",
+      "contentHash": "35aa1003dc087e744b6e21b785e5201974034f4217e1f44a6a3f982949806806",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-famous-line-scene-ux-review.md": {
+      "filePath": "ai/session-logs/2026-06-07-famous-line-scene-ux-review.md",
+      "contentHash": "8b56034a23f976e52f1d1ad6a3057ab1fd8297ebb1e7782fccaba3f0cd9fe4b4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-famous-lines-quote-pack-research.md": {
+      "filePath": "ai/session-logs/2026-06-07-famous-lines-quote-pack-research.md",
+      "contentHash": "aae2d4da852d587fb3a5152a1aa8a8abe3f96e11cc146cbda9e8612ccc55f5ae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-gemini-tts-cli-prep.md": {
+      "filePath": "ai/session-logs/2026-06-07-gemini-tts-cli-prep.md",
+      "contentHash": "643299f6fd25119d81ca7133d45c44df709f515fc0ef26e3bad7ac52290e15ed",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-instant-one-line-mvp-plan.md": {
+      "filePath": "ai/session-logs/2026-06-07-instant-one-line-mvp-plan.md",
+      "contentHash": "42cf3eeb8a5559bccc34db6b0eb3b47ec63020bd99a7bf47aa029e77696ecb95",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-instant-one-line-mvp-review.md": {
+      "filePath": "ai/session-logs/2026-06-07-instant-one-line-mvp-review.md",
+      "contentHash": "9b17af95835fe68ee00967aaada66ff0ffc30d8102224e0d3b933f0d00f3773b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-market-research-habit-focus-apps.md": {
+      "filePath": "ai/session-logs/2026-06-07-market-research-habit-focus-apps.md",
+      "contentHash": "c189fb4a93d0168195787f18136efdaf1ac8277b244fcc62baf15dc9d1874cae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-market-research-repivot.md": {
+      "filePath": "ai/session-logs/2026-06-07-market-research-repivot.md",
+      "contentHash": "88495b6981155a7aff7cb2d8696bced1dfe41c61b664a7d57ce44e2b1039d98f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-mental-one-line-category-research.md": {
+      "filePath": "ai/session-logs/2026-06-07-mental-one-line-category-research.md",
+      "contentHash": "c8a7014ab3e9ed2808d4867aa88823af419c5afa0be7645236791c8b51083830",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-praise-copy-variation-fix.md": {
+      "filePath": "ai/session-logs/2026-06-07-praise-copy-variation-fix.md",
+      "contentHash": "26a0baa538c854af29a135828b6f5d857f7b250f37cd8d56fb5b21fb3dac903f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-product-brief-refinement.md": {
+      "filePath": "ai/session-logs/2026-06-07-product-brief-refinement.md",
+      "contentHash": "690a9dd3c3d5d579720032d56f51ae37e70e93c54d782814179953caa18c3a64",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-scene-choice-copy-draft.md": {
+      "filePath": "ai/session-logs/2026-06-07-scene-choice-copy-draft.md",
+      "contentHash": "59bdf38d694454bf9f762ce01692aedcf773e07bd05ab059008ae69c5b67c0bb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-tender-calm-tts-test.md": {
+      "filePath": "ai/session-logs/2026-06-07-tender-calm-tts-test.md",
+      "contentHash": "b2eb0b075159bc6967e5bf55a61ce42eda878233506bccd21dfd7c5819bf6394",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-ui-product-review.md": {
+      "filePath": "ai/session-logs/2026-06-07-ui-product-review.md",
+      "contentHash": "c281cd825d2e099eaaf130df6d1b08943f95d4eea21bab5dd85a2c29bafdc1eb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 75,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-voice-copy-quality-fix.md": {
+      "filePath": "ai/session-logs/2026-06-07-voice-copy-quality-fix.md",
+      "contentHash": "00940e50aee6e22fe14d0910c94cfd40561377c90f482b2e13b6cde5e925c354",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-07-web-ui-implementation.md": {
+      "filePath": "ai/session-logs/2026-06-07-web-ui-implementation.md",
+      "contentHash": "341903bebd86e76ca515ef227a062237aa8485b96e7763bca1d725880454b257",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-08-gpt-opinion-review.md": {
+      "filePath": "ai/session-logs/2026-06-08-gpt-opinion-review.md",
+      "contentHash": "cf477cab7b8ef4a700eccca84f09bc7fdb4d5a9777010d82e053ca15f93639a4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-08-praise-me-design-mvp.md": {
+      "filePath": "ai/session-logs/2026-06-08-praise-me-design-mvp.md",
+      "contentHash": "a282833eae57366bd464a362856f48888f62bbff543b4bf0184295e766872881",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-08-praise-me-mvp-spec.md": {
+      "filePath": "ai/session-logs/2026-06-08-praise-me-mvp-spec.md",
+      "contentHash": "740b9df4a894ad87c33e2cef3f77ff2aee514258df25219a85d28e9dcb20264d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-audio-ready-implementation.md": {
+      "filePath": "ai/session-logs/2026-06-13-audio-ready-implementation.md",
+      "contentHash": "3ad1e334807791da544747f74afc7fb1f5ac95e12727d448b5f7691f4ed5f871",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-infinite-praise-planning-design-qa-security-review-codex.md": {
+      "filePath": "ai/session-logs/2026-06-13-infinite-praise-planning-design-qa-security-review-codex.md",
+      "contentHash": "93677a9f8a3db2e51d47939b352cff7534e5fab9c183ef12edc0c99a9e1e5859",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-local-audio-script-final.md": {
+      "filePath": "ai/session-logs/2026-06-13-local-audio-script-final.md",
+      "contentHash": "3beb2191562d16a4c9b460afd26caabfc6b56a2416eeb49781bb914c7071e67b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-local-audio-script-v0.1.md": {
+      "filePath": "ai/session-logs/2026-06-13-local-audio-script-v0.1.md",
+      "contentHash": "a3786d97a25c4f3d75fbbf9b2ea5457ca1aae903733400eb6bc87990ca0a0edf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-pairtune-rollback-platform-stubs.md": {
+      "filePath": "ai/session-logs/2026-06-13-pairtune-rollback-platform-stubs.md",
+      "contentHash": "7626079705789b6c17f59bf0d181231b698a168c738232968096309b5856e20a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-praise-me-design-brief.md": {
+      "filePath": "ai/session-logs/2026-06-13-praise-me-design-brief.md",
+      "contentHash": "3eb3a3bd7e43d87d71233e0690da008b2dc86f20c35724644da9544796e9d562",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-praise-me-product-planning-review.md": {
+      "filePath": "ai/session-logs/2026-06-13-praise-me-product-planning-review.md",
+      "contentHash": "6690f8441c7ef11258dc22c9a263d0f023047bc739b994472435fb5c831cb043",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-ux-elevenlabs-review.md": {
+      "filePath": "ai/session-logs/2026-06-13-ux-elevenlabs-review.md",
+      "contentHash": "a3958cc80a5aedafae0e5b1193e96a5afadd3929ecf1191f718bd0960177b090",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 81,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-13-무한칭찬앱-i18n-platform-readiness.md": {
+      "filePath": "ai/session-logs/2026-06-13-무한칭찬앱-i18n-platform-readiness.md",
+      "contentHash": "f1c109eb47e2954976d1e518a6bfb17944d00324bc6041e6c485574192cadb89",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-15-praise-nag-reminder-pivot-draft.md": {
+      "filePath": "ai/session-logs/2026-06-15-praise-nag-reminder-pivot-draft.md",
+      "contentHash": "c617d057af4eb2e4a551dad62c264b756eccc3f221a33329f2a4e6cfc608869a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-15-praise-reminder-final-plan-codex.md": {
+      "filePath": "ai/session-logs/2026-06-15-praise-reminder-final-plan-codex.md",
+      "contentHash": "da6925b13e69fbdaca8ac984e09a3e65a8fcbe0aae8890624192fdbe55098ed5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-16-notification-policy-check.md": {
+      "filePath": "ai/session-logs/2026-06-16-notification-policy-check.md",
+      "contentHash": "687e2c951aee4112dd625aa5b6e083eeee815f704f09099b136d989cfb25b1c0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-16-praise-reminder-subagent-implementation-plan-codex.md": {
+      "filePath": "ai/session-logs/2026-06-16-praise-reminder-subagent-implementation-plan-codex.md",
+      "contentHash": "3394aa86f59416bcc9a30bd2f28b1aacf70a9f116300c8f40df359729f1d348a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 62,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-16-praise-reminder-v01-v02-implementation-codex.md": {
+      "filePath": "ai/session-logs/2026-06-16-praise-reminder-v01-v02-implementation-codex.md",
+      "contentHash": "ab0d899c3a113ec83c72390790cbf68a1e2d953ea47897bee6c373c68c4ff914",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 125,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/2026-06-16-praise-reminder-v03-plan-codex.md": {
+      "filePath": "ai/session-logs/2026-06-16-praise-reminder-v03-plan-codex.md",
+      "contentHash": "11fded3097ac547cc1e8f04682b5da62039f580a05abdb420cd725cbc9558d6c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "ai/session-logs/README.md": {
+      "filePath": "ai/session-logs/README.md",
+      "contentHash": "0b2614dc5f24d2842fe7203c053171bb60c01a493f1c2ae37e7bf1b39575acab",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "f59fb612d9dae03fb797d3673e7b2f237eb3f2133d880c80e62a583770a077e0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "index.html": {
+      "filePath": "index.html",
+      "contentHash": "edb8afe2a00eb42cb76abbee558ecac22768b2f3f664a84f97d329396d6c1f3e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "3730189a952f2da70abe4361fe4726fa8b3e773fbb522d105bf6d3ad997481c2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "public/assets/audio/v0.1/.gitkeep": {
+      "filePath": "public/assets/audio/v0.1/.gitkeep",
+      "contentHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": false
+    },
+    "public/assets/audio/v0.1/README.md": {
+      "filePath": "public/assets/audio/v0.1/README.md",
+      "contentHash": "0abd77c666d3727b0e3c292d9a39c768636e174ee465bfcb89d71f9d63e2337a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/tts/gemini-tts.mjs": {
+      "filePath": "scripts/tts/gemini-tts.mjs",
+      "contentHash": "d86aaf7eb7b256e6843086c0afb8d5c22d0ca13879a488022cf37e36156e116b",
+      "functions": [
+        {
+          "name": "readArgs",
+          "params": [
+            "argv"
+          ],
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "createPrompt",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "createGeminiBody",
+          "params": [],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "writeUInt32",
+          "params": [
+            "buffer",
+            "value",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "writeUInt16",
+          "params": [
+            "buffer",
+            "value",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "createWavFromPcm",
+          "params": [
+            "pcm"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "findAudioData",
+          "params": [
+            "payload"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "synthesize",
+          "params": [],
+          "exported": false,
+          "lineCount": 28
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "mkdir",
+            "writeFile"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "dirname",
+            "resolve"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 219,
+      "hasStructuralAnalysis": true
+    },
+    "src/App.tsx": {
+      "filePath": "src/App.tsx",
+      "contentHash": "f391df2b1cbf104d4a4618d8c3653f3939fdbac019c97afc8ec722de69f29a5e",
+      "functions": [
+        {
+          "name": "App",
+          "params": [],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "./features/reminder/ReminderApp",
+          "specifiers": [
+            "ReminderApp"
+          ]
+        },
+        {
+          "source": "./i18n",
+          "specifiers": [
+            "createI18n",
+            "isLocale",
+            "localeOptions",
+            "Locale"
+          ]
+        },
+        {
+          "source": "./platform/adapters",
+          "specifiers": [
+            "createMvpPlatformAdapters"
+          ]
+        }
+      ],
+      "exports": [
+        "App"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/deepPraise.ts": {
+      "filePath": "src/core/deepPraise.ts",
+      "contentHash": "f570b5c4ff23377abb3611612775fb952b5c13d258891b336d1ed3ce77d8c993",
+      "functions": [
+        {
+          "name": "createDeepPraise",
+          "params": [
+            "{ situation, mood }"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseMood",
+            "PraiseSituation"
+          ]
+        }
+      ],
+      "exports": [
+        "createDeepPraise"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/praiseCatalog.ts": {
+      "filePath": "src/core/praiseCatalog.ts",
+      "contentHash": "8c798b821a2a42fab842f0d4f10a3af30643c5a6064c12c3f5f2b1b048251055",
+      "functions": [
+        {
+          "name": "createNormalCandidates",
+          "params": [
+            "situation",
+            "mood"
+          ],
+          "returnType": "PraiseCandidate[]",
+          "exported": false,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseMood",
+            "PraiseSituation"
+          ]
+        },
+        {
+          "source": "./praiseSelector",
+          "specifiers": [
+            "PraiseCandidate"
+          ]
+        }
+      ],
+      "exports": [
+        "praiseSituations",
+        "praiseMoods",
+        "defaultPraiseCatalog"
+      ],
+      "totalLines": 133,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/praiseReceipt.ts": {
+      "filePath": "src/core/praiseReceipt.ts",
+      "contentHash": "adda81d525fa85721b34f3ed369128bcdf8af5f7dd65eee0db6de01b668601bd",
+      "functions": [
+        {
+          "name": "countBy",
+          "params": [
+            "events",
+            "key"
+          ],
+          "returnType": "Map<T, number>",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "topEntry",
+          "params": [
+            "counts"
+          ],
+          "returnType": "[T, number] | undefined",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "situationLine",
+          "params": [
+            "situation",
+            "count"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "createPraiseReceipt",
+          "params": [
+            "{\n  events,\n  from,\n  to\n}"
+          ],
+          "returnType": "PraiseReceipt",
+          "exported": true,
+          "lineCount": 45
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseEvent",
+            "PraiseMood",
+            "PraiseSituation"
+          ]
+        }
+      ],
+      "exports": [
+        "createPraiseReceipt"
+      ],
+      "totalLines": 99,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/praiseRepository.ts": {
+      "filePath": "src/core/praiseRepository.ts",
+      "contentHash": "b0782902e7331fc59e73ccb072ca61e3c302041437ea6e256da11188419d400a",
+      "functions": [
+        {
+          "name": "cloneEvent",
+          "params": [
+            "event"
+          ],
+          "returnType": "PraiseEvent",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "createMemoryPraiseRepository",
+          "params": [
+            "initialEvents"
+          ],
+          "returnType": "PraiseRepository",
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "createMemoryPraiseRepository"
+      ],
+      "totalLines": 76,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/praiseSelector.ts": {
+      "filePath": "src/core/praiseSelector.ts",
+      "contentHash": "8d4ba35845d229c3cb502c1fc481464a4a1691374e6198b417468fc91211f8b9",
+      "functions": [
+        {
+          "name": "reactionScore",
+          "params": [
+            "candidate",
+            "events"
+          ],
+          "returnType": "number",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "lastUsedMessageIds",
+          "params": [
+            "events"
+          ],
+          "returnType": "Set<string>",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "createPraiseSelector",
+          "params": [
+            "candidates"
+          ],
+          "returnType": "PraiseSelector",
+          "exported": true,
+          "lineCount": 53
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseDepth",
+            "PraiseEvent",
+            "PraiseMood",
+            "PraiseSituation"
+          ]
+        }
+      ],
+      "exports": [
+        "createPraiseSelector"
+      ],
+      "totalLines": 114,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/ttsPrompt.ts": {
+      "filePath": "src/core/ttsPrompt.ts",
+      "contentHash": "3ba3c4acfe89dc1d497df72c450fc94c121cd3630289e8302421547f9c1faf83",
+      "functions": [
+        {
+          "name": "createGeminiTtsRequest",
+          "params": [
+            "{\n  text,\n  situation,\n  mood,\n  voice = defaultGeminiVoice,\n  model = defaultGeminiTtsModel\n}"
+          ],
+          "returnType": "GeminiTtsRequest",
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseMood",
+            "PraiseSituation"
+          ]
+        }
+      ],
+      "exports": [
+        "createGeminiTtsRequest"
+      ],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "src/core/voiceScript.ts": {
+      "filePath": "src/core/voiceScript.ts",
+      "contentHash": "ae4ecbf14300645acb835521792976a4cf584250e185a630e37ef3316b159286",
+      "functions": [
+        {
+          "name": "splitLongText",
+          "params": [
+            "text"
+          ],
+          "returnType": "string[]",
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "splitIntoSpeakableParts",
+          "params": [
+            "message"
+          ],
+          "returnType": "string[]",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "createVoiceScript",
+          "params": [
+            "message",
+            "mood"
+          ],
+          "returnType": "VoiceScript",
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./praiseRepository",
+          "specifiers": [
+            "PraiseMood"
+          ]
+        }
+      ],
+      "exports": [
+        "createVoiceScript"
+      ],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "src/data/audio-manifest.v0.1.json": {
+      "filePath": "src/data/audio-manifest.v0.1.json",
+      "contentHash": "7e146def9d07b32a41b65e31e78929ae6800ce7badb8e1b0c4d9cf626fed7dbb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/data/message-templates.v0.1.json": {
+      "filePath": "src/data/message-templates.v0.1.json",
+      "contentHash": "f4266bc1894d143d73f115e4bbb4f765c802dd1220049925d837f3745718bd0b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "src/data/quote-pack.v0.1.json": {
+      "filePath": "src/data/quote-pack.v0.1.json",
+      "contentHash": "5460f562e0d1a34f526ff367b54e14b627907a9b3b0bb346efd80c4a238a44de",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 496,
+      "hasStructuralAnalysis": true
+    },
+    "src/domain/reminders/repository.ts": {
+      "filePath": "src/domain/reminders/repository.ts",
+      "contentHash": "bcdc735a27e45b64bff072a7cd2586d2f81a398c3de32d13229c04d7d54e3753",
+      "functions": [
+        {
+          "name": "cloneReminder",
+          "params": [
+            "reminder"
+          ],
+          "returnType": "Reminder",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "isRecord",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "isOptionalString",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "isValidDateLike",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "isCustomDays",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "isReminder",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "isReaction",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "isOccurrenceActionRow",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "cloneReaction",
+          "params": [
+            "reaction"
+          ],
+          "returnType": "ReminderReaction",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "cloneOccurrenceAction",
+          "params": [
+            "action"
+          ],
+          "returnType": "ReminderOccurrenceAction",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "reviveOccurrenceAction",
+          "params": [
+            "value"
+          ],
+          "returnType": "ReminderOccurrenceAction",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "createLocalStorageReminderRepository",
+          "params": [
+            "storage"
+          ],
+          "returnType": "ReminderRepository",
+          "exported": true,
+          "lineCount": 79
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./schema",
+          "specifiers": [
+            "isMessageMode",
+            "isNotificationDisplayMode",
+            "isRepeatRule",
+            "Reminder",
+            "ReminderOccurrenceAction",
+            "ReminderReaction"
+          ]
+        }
+      ],
+      "exports": [
+        "reminderStorageKey",
+        "reminderReactionStorageKey",
+        "reminderOccurrenceActionStorageKey",
+        "createLocalStorageReminderRepository"
+      ],
+      "totalLines": 186,
+      "hasStructuralAnalysis": true
+    },
+    "src/domain/reminders/schedule.ts": {
+      "filePath": "src/domain/reminders/schedule.ts",
+      "contentHash": "078127a41f41ad1a4db0fcfc2ed9adbc4f2e602bbf9fec51a1274a5098da694a",
+      "functions": [
+        {
+          "name": "parseScheduledTime",
+          "params": [
+            "scheduledTime"
+          ],
+          "returnType": "{ hours: number; minutes: number } | null",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "startOfDay",
+          "params": [
+            "date"
+          ],
+          "returnType": "Date",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "addDays",
+          "params": [
+            "date",
+            "days"
+          ],
+          "returnType": "Date",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "isWeekend",
+          "params": [
+            "date"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "isWeekday",
+          "params": [
+            "date"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "repeatsOnDate",
+          "params": [
+            "reminder",
+            "date"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "candidateForDate",
+          "params": [
+            "reminder",
+            "date"
+          ],
+          "returnType": "Date | null",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "getSourceScheduledFor",
+          "params": [
+            "action"
+          ],
+          "returnType": "Date",
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "getLatestActionForSource",
+          "params": [
+            "reminderId",
+            "sourceScheduledFor",
+            "actions"
+          ],
+          "returnType": "ReminderOccurrenceAction | null",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "applyOccurrenceAction",
+          "params": [
+            "reminder",
+            "sourceScheduledFor",
+            "actions"
+          ],
+          "returnType": "ReminderOccurrence | null",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "getNextOccurrence",
+          "params": [
+            "reminder",
+            "now",
+            "actions"
+          ],
+          "returnType": "ReminderOccurrence | null",
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "getTodaysUpcomingReminders",
+          "params": [
+            "reminders",
+            "now",
+            "actions"
+          ],
+          "returnType": "ReminderOccurrence[]",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "snoozeOccurrence",
+          "params": [
+            "occurrence",
+            "minutes",
+            "createdAt"
+          ],
+          "returnType": "ReminderOccurrenceAction",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "skipNextOccurrence",
+          "params": [
+            "occurrence",
+            "createdAt"
+          ],
+          "returnType": "ReminderOccurrenceAction",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./schema",
+          "specifiers": [
+            "Reminder",
+            "ReminderOccurrence",
+            "ReminderOccurrenceAction"
+          ]
+        }
+      ],
+      "exports": [
+        "getNextOccurrence",
+        "getTodaysUpcomingReminders",
+        "snoozeOccurrence",
+        "skipNextOccurrence"
+      ],
+      "totalLines": 133,
+      "hasStructuralAnalysis": true
+    },
+    "src/domain/reminders/schema.ts": {
+      "filePath": "src/domain/reminders/schema.ts",
+      "contentHash": "89aff7d2ca1573189ca31a21acc29ff35740b57e3578573409ad3eddbad1969c",
+      "functions": [
+        {
+          "name": "includesString",
+          "params": [
+            "values",
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "isMessageMode",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "isRepeatRule",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "isNotificationDisplayMode",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "MESSAGE_MODES",
+        "NAG_INTENSITIES",
+        "NOTIFICATION_DISPLAY_MODES",
+        "REPEAT_RULES",
+        "isMessageMode",
+        "isRepeatRule",
+        "isNotificationDisplayMode"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "src/domain/reminders/templates.ts": {
+      "filePath": "src/domain/reminders/templates.ts",
+      "contentHash": "199baead23f1c10bba554d543b9807e3b8a179c88f487426150b25f15b772011",
+      "functions": [
+        {
+          "name": "getTemplatesByMode",
+          "params": [
+            "mode"
+          ],
+          "returnType": "MessageTemplate[]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "getNagTemplatesByIntensity",
+          "params": [
+            "intensity"
+          ],
+          "returnType": "MessageTemplate[]",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "getTemplateById",
+          "params": [
+            "id"
+          ],
+          "returnType": "MessageTemplate | undefined",
+          "exported": true,
+          "lineCount": 2
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../data/message-templates.v0.1.json",
+          "specifiers": [
+            "messageTemplateData"
+          ]
+        },
+        {
+          "source": "./schema",
+          "specifiers": [
+            "MessageMode",
+            "MessageTemplate",
+            "NagIntensity"
+          ]
+        }
+      ],
+      "exports": [
+        "messageTemplates",
+        "getTemplatesByMode",
+        "getNagTemplatesByIntensity",
+        "getTemplateById"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/reminder/ReminderApp.tsx": {
+      "filePath": "src/features/reminder/ReminderApp.tsx",
+      "contentHash": "092ce4c011d493235b069a37f595e2eb1cfd5e6504f4d8968f952fd11b614d8e",
+      "functions": [
+        {
+          "name": "ReminderApp",
+          "params": [
+            "{ i18n, platformAdapters }"
+          ],
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/repository",
+          "specifiers": [
+            "createLocalStorageReminderRepository"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/schedule",
+          "specifiers": [
+            "getTodaysUpcomingReminders"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/schema",
+          "specifiers": [
+            "Reminder",
+            "ReminderOccurrenceAction"
+          ]
+        },
+        {
+          "source": "../../i18n",
+          "specifiers": [
+            "createI18n"
+          ]
+        },
+        {
+          "source": "../../platform/adapters",
+          "specifiers": [
+            "PlatformAdapters"
+          ]
+        },
+        {
+          "source": "./ReminderCreate",
+          "specifiers": [
+            "ReminderCreate"
+          ]
+        },
+        {
+          "source": "./ReminderDetail",
+          "specifiers": [
+            "ReminderDetail"
+          ]
+        },
+        {
+          "source": "./ReminderHome",
+          "specifiers": [
+            "ReminderHome"
+          ]
+        }
+      ],
+      "exports": [
+        "ReminderApp"
+      ],
+      "totalLines": 108,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/reminder/ReminderCreate.tsx": {
+      "filePath": "src/features/reminder/ReminderCreate.tsx",
+      "contentHash": "92b1de40203948dfec9e46860df1125c58c22dc5d9181556b79939a584de0ad4",
+      "functions": [
+        {
+          "name": "createReminderId",
+          "params": [],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "getTemplatesForMode",
+          "params": [
+            "mode",
+            "intensity"
+          ],
+          "returnType": "MessageTemplate[]",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "ReminderCreate",
+          "params": [
+            "{ i18n, onCancel, onSave }"
+          ],
+          "exported": true,
+          "lineCount": 173
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/schema",
+          "specifiers": [
+            "MessageMode",
+            "MessageTemplate",
+            "NagIntensity",
+            "NotificationDisplayMode",
+            "Reminder",
+            "RepeatRule"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/templates",
+          "specifiers": [
+            "getNagTemplatesByIntensity",
+            "getTemplatesByMode"
+          ]
+        },
+        {
+          "source": "../../i18n",
+          "specifiers": [
+            "createI18n"
+          ]
+        },
+        {
+          "source": "./reminderViewModel",
+          "specifiers": [
+            "displayOptions",
+            "getInitialTemplate",
+            "repeatOptions",
+            "timePresets"
+          ]
+        }
+      ],
+      "exports": [
+        "ReminderCreate"
+      ],
+      "totalLines": 194,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/reminder/ReminderDetail.tsx": {
+      "filePath": "src/features/reminder/ReminderDetail.tsx",
+      "contentHash": "3b9a07f66f8d82f417dfdf90b43c39919f2508d745fe58cbe4ef769640fdb788",
+      "functions": [
+        {
+          "name": "createId",
+          "params": [
+            "prefix"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "ReminderDetail",
+          "params": [
+            "{\n  i18n,\n  reminder,\n  occurrenceActions,\n  capability,\n  onBack,\n  onSaveReaction,\n  onSaveOccurrenceAction,\n  onUpdateReminder\n}"
+          ],
+          "exported": true,
+          "lineCount": 122
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/schedule",
+          "specifiers": [
+            "getNextOccurrence",
+            "skipNextOccurrence",
+            "snoozeOccurrence"
+          ]
+        },
+        {
+          "source": "../../domain/reminders/schema",
+          "specifiers": [
+            "Reminder",
+            "ReminderOccurrenceAction",
+            "ReminderReaction"
+          ]
+        },
+        {
+          "source": "../../i18n",
+          "specifiers": [
+            "createI18n"
+          ]
+        },
+        {
+          "source": "../../platform/adapters",
+          "specifiers": [
+            "NotificationCapability"
+          ]
+        },
+        {
+          "source": "./reminderViewModel",
+          "specifiers": [
+            "formatReminderSummary"
+          ]
+        }
+      ],
+      "exports": [
+        "ReminderDetail"
+      ],
+      "totalLines": 144,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/reminder/ReminderHome.tsx": {
+      "filePath": "src/features/reminder/ReminderHome.tsx",
+      "contentHash": "fb3983cf5c028f2de3a76d19599da20c41063f6d6b3f0b69d68664b964037232",
+      "functions": [
+        {
+          "name": "ReminderHome",
+          "params": [
+            "{\n  i18n,\n  reminders,\n  todayOccurrences,\n  onCreate,\n  onOpenDetail\n}"
+          ],
+          "exported": true,
+          "lineCount": 74
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../domain/reminders/schema",
+          "specifiers": [
+            "Reminder",
+            "ReminderOccurrence"
+          ]
+        },
+        {
+          "source": "../../i18n",
+          "specifiers": [
+            "createI18n"
+          ]
+        },
+        {
+          "source": "./reminderViewModel",
+          "specifiers": [
+            "formatReminderSummary"
+          ]
+        }
+      ],
+      "exports": [
+        "ReminderHome"
+      ],
+      "totalLines": 87,
+      "hasStructuralAnalysis": true
+    },
+    "src/features/reminder/reminderViewModel.ts": {
+      "filePath": "src/features/reminder/reminderViewModel.ts",
+      "contentHash": "da6180d0c0c654698b1f9b5cb9549a521b4b0a66844fa34c8aa9b3e8216cf38f",
+      "functions": [
+        {
+          "name": "formatReminderSummary",
+          "params": [
+            "reminder",
+            "translateRepeat"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "getInitialTemplate",
+          "params": [
+            "templates",
+            "mode",
+            "intensity"
+          ],
+          "returnType": "MessageTemplate | null",
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../../domain/reminders/schema",
+          "specifiers": [
+            "MessageTemplate",
+            "Reminder"
+          ]
+        }
+      ],
+      "exports": [
+        "timePresets",
+        "repeatOptions",
+        "displayOptions",
+        "formatReminderSummary",
+        "getInitialTemplate"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "src/i18n.ts": {
+      "filePath": "src/i18n.ts",
+      "contentHash": "6f207b7ae2ecf59784b112854f57be87a48d46e62b788631b2538e7daf495507",
+      "functions": [
+        {
+          "name": "format",
+          "params": [
+            "template",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isLocale",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "createI18n",
+          "params": [
+            "locale"
+          ],
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./data/quote-pack.v0.1.json",
+          "specifiers": [
+            "quotePack"
+          ]
+        },
+        {
+          "source": "./domain/reminders/schema",
+          "specifiers": [
+            "MessageMode",
+            "MessageTemplate",
+            "NagIntensity",
+            "NotificationDisplayMode",
+            "RepeatRule"
+          ]
+        }
+      ],
+      "exports": [
+        "localeOptions",
+        "isLocale",
+        "createI18n"
+      ],
+      "totalLines": 362,
+      "hasStructuralAnalysis": true
+    },
+    "src/main.tsx": {
+      "filePath": "src/main.tsx",
+      "contentHash": "541ff2433475e27c9ed06888e0d2d90c7f9b9683c1a00d739733b1750865bbab",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "StrictMode"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "createRoot"
+          ]
+        },
+        {
+          "source": "./App",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./styles.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "src/platform/adapters.ts": {
+      "filePath": "src/platform/adapters.ts",
+      "contentHash": "dfc1d2d16745b56d4e43499c25c65e386898c8211aa1d31d4c617eae74a13e27",
+      "functions": [
+        {
+          "name": "createMemoryStorage",
+          "params": [],
+          "returnType": "ReminderStorage & { clear(): void }",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "getDefaultStorage",
+          "params": [],
+          "returnType": "ReminderStorage & { clear?: () => void }",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "createMvpPlatformAdapters",
+          "params": [
+            "storageBackend"
+          ],
+          "returnType": "PlatformAdapters",
+          "exported": true,
+          "lineCount": 75
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../domain/reminders/repository",
+          "specifiers": [
+            "ReminderStorage"
+          ]
+        }
+      ],
+      "exports": [
+        "createMvpPlatformAdapters"
+      ],
+      "totalLines": 186,
+      "hasStructuralAnalysis": true
+    },
+    "src/styles.css": {
+      "filePath": "src/styles.css",
+      "contentHash": "cce60637f3bc19e95fed70331d71cf408e72e816e4de07e464240dd79607433c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 991,
+      "hasStructuralAnalysis": false
+    },
+    "src/test/setup.ts": {
+      "filePath": "src/test/setup.ts",
+      "contentHash": "8e1834af9812ac378d543a7451de389048f3d4bc4b14cb6a4e9a5a7ebc2e5c79",
+      "functions": [
+        {
+          "name": "createStorageMock",
+          "params": [],
+          "returnType": "Storage",
+          "exported": false,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@testing-library/jest-dom/vitest",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "test/App.test.tsx": {
+      "filePath": "test/App.test.tsx",
+      "contentHash": "1d4136a501380d81fea45fd4b0a94fa76b252f2c28389e3c5142b5177dfc1fac",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@testing-library/react",
+          "specifiers": [
+            "render",
+            "screen",
+            "within"
+          ]
+        },
+        {
+          "source": "@testing-library/user-event",
+          "specifiers": [
+            "userEvent"
+          ]
+        },
+        {
+          "source": "vitest",
+          "specifiers": [
+            "afterEach",
+            "beforeEach",
+            "describe",
+            "expect",
+            "it",
+            "vi"
+          ]
+        },
+        {
+          "source": "../src/App",
+          "specifiers": [
+            "App"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "test/geminiTtsCli.test.ts": {
+      "filePath": "test/geminiTtsCli.test.ts",
+      "contentHash": "f9f52650fa98f5ba8fc01c6352d40adb28ab6ba7de81b1df2b89a98e63799285",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "execFile"
+          ]
+        },
+        {
+          "source": "node:util",
+          "specifiers": [
+            "promisify"
+          ]
+        },
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "test/i18n.test.ts": {
+      "filePath": "test/i18n.test.ts",
+      "contentHash": "d4c25a9d148e329e8f46f1349e8a46a2df89cf671f1e7bd4496b726de77bf581",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/data/quote-pack.v0.1.json",
+          "specifiers": [
+            "quotePack"
+          ]
+        },
+        {
+          "source": "../src/i18n",
+          "specifiers": [
+            "createI18n",
+            "isLocale",
+            "localeOptions"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "test/platformAdapters.test.ts": {
+      "filePath": "test/platformAdapters.test.ts",
+      "contentHash": "5f345c2c5b7fb18729a02e5db6f667e96ae7583a15d0ecf841ed71a77567c9ec",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/platform/adapters",
+          "specifiers": [
+            "createMvpPlatformAdapters"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 65,
+      "hasStructuralAnalysis": true
+    },
+    "test/praiseCatalog.test.ts": {
+      "filePath": "test/praiseCatalog.test.ts",
+      "contentHash": "8f20cb0759b03c6800f315aa39524fdbc24b13d29d6e94d09eb7fc879d515e64",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/praiseCatalog",
+          "specifiers": [
+            "defaultPraiseCatalog",
+            "praiseMoods",
+            "praiseSituations"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    "test/praiseReceipt.test.ts": {
+      "filePath": "test/praiseReceipt.test.ts",
+      "contentHash": "93b56f6c43cd1f1487bdc9e5be4bf045d71fd198e42647667eabfe341204ac56",
+      "functions": [
+        {
+          "name": "event",
+          "params": [
+            "overrides"
+          ],
+          "returnType": "PraiseEvent",
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/praiseReceipt",
+          "specifiers": [
+            "createPraiseReceipt"
+          ]
+        },
+        {
+          "source": "../src/core/praiseRepository",
+          "specifiers": [
+            "PraiseEvent"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 81,
+      "hasStructuralAnalysis": true
+    },
+    "test/praiseRepository.test.ts": {
+      "filePath": "test/praiseRepository.test.ts",
+      "contentHash": "150c5f56fe8affee4cac88e4f14b0565cc1f7b85e764cc63e3b910e0685c3c84",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/praiseRepository",
+          "specifiers": [
+            "createMemoryPraiseRepository",
+            "PraiseEvent"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "test/praiseSelector.test.ts": {
+      "filePath": "test/praiseSelector.test.ts",
+      "contentHash": "ef262220cb1786c1e90bbcb6c57c1a3710dc560c4e389e1446aa68db48edbcde",
+      "functions": [
+        {
+          "name": "pastEvent",
+          "params": [
+            "messageId",
+            "createdAt",
+            "reaction"
+          ],
+          "returnType": "PraiseEvent",
+          "exported": false,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/praiseSelector",
+          "specifiers": [
+            "createPraiseSelector",
+            "PraiseCandidate"
+          ]
+        },
+        {
+          "source": "../src/core/praiseRepository",
+          "specifiers": [
+            "PraiseEvent"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 116,
+      "hasStructuralAnalysis": true
+    },
+    "test/quotePackData.test.ts": {
+      "filePath": "test/quotePackData.test.ts",
+      "contentHash": "251d33417d0b0d07f1463431c36eabe06aa4c3e0062968c4b58fac7491a07088",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/data/audio-manifest.v0.1.json",
+          "specifiers": [
+            "audioManifest"
+          ]
+        },
+        {
+          "source": "../src/data/quote-pack.v0.1.json",
+          "specifiers": [
+            "quotePack"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "test/reminderRepository.test.ts": {
+      "filePath": "test/reminderRepository.test.ts",
+      "contentHash": "aa7a2b54e62358ea7dcfbdd739df373ddf465ce3147489df03f09ccf4cbd9ceb",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "beforeEach",
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/repository",
+          "specifiers": [
+            "createLocalStorageReminderRepository",
+            "reminderOccurrenceActionStorageKey",
+            "reminderStorageKey",
+            "ReminderPatch"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/schema",
+          "specifiers": [
+            "Reminder"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "test/reminderSchedule.test.ts": {
+      "filePath": "test/reminderSchedule.test.ts",
+      "contentHash": "d3dbd5982134368427130d04916dce2da0e34682d95612c5cb4b6189d25ae975",
+      "functions": [
+        {
+          "name": "createReminder",
+          "params": [
+            "overrides"
+          ],
+          "returnType": "Reminder",
+          "exported": false,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/schedule",
+          "specifiers": [
+            "getNextOccurrence",
+            "getTodaysUpcomingReminders",
+            "skipNextOccurrence",
+            "snoozeOccurrence"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/schema",
+          "specifiers": [
+            "Reminder",
+            "ReminderOccurrenceAction"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 113,
+      "hasStructuralAnalysis": true
+    },
+    "test/reminderSchema.test.ts": {
+      "filePath": "test/reminderSchema.test.ts",
+      "contentHash": "a5a87881e7685e0e2f5dd8dd6e5120d91a0dbc4cb64cdd9cf96cf0940c0b183e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/schema",
+          "specifiers": [
+            "isMessageMode",
+            "isNotificationDisplayMode",
+            "isRepeatRule",
+            "MESSAGE_MODES",
+            "NAG_INTENSITIES",
+            "NOTIFICATION_DISPLAY_MODES",
+            "REPEAT_RULES",
+            "Reminder"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "test/reminderTemplates.test.ts": {
+      "filePath": "test/reminderTemplates.test.ts",
+      "contentHash": "fb465608c9714e7966c1f3d9c8db28cfa9e2888ce89805abefe30bbcac1fccea",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/domain/reminders/templates",
+          "specifiers": [
+            "getNagTemplatesByIntensity",
+            "getTemplateById",
+            "getTemplatesByMode",
+            "messageTemplates"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "test/ttsPrompt.test.ts": {
+      "filePath": "test/ttsPrompt.test.ts",
+      "contentHash": "7c115e3b2c160f61b09a7d6a27f23bd2fabfababe5ce9a9e71578df5761f8bd6",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/ttsPrompt",
+          "specifiers": [
+            "createGeminiTtsRequest"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "test/voiceScript.test.ts": {
+      "filePath": "test/voiceScript.test.ts",
+      "contentHash": "1c5e13c0cbe62da740c76f5556f4ff5b73b8ae33c5723d1d4c993cf9312ec655",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest",
+          "specifiers": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "source": "../src/core/voiceScript",
+          "specifiers": [
+            "createVoiceScript"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "9d95efd07f01961b76d53a337ab0a7268adad4f4e518450993f2ab51ec8e6f77",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "vitest.config.ts": {
+      "filePath": "vitest.config.ts",
+      "contentHash": "c278a0c928b45f9a4861c91e5b2ff3b2b8221e7a1f82c5ec380b37622ccb14c2",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vitest/config",
+          "specifiers": [
+            "defineConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

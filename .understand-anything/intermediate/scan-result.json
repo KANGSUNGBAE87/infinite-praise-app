@@ -1,0 +1,1055 @@
+{
+  "projectName": "무한칭찬앱",
+  "projectDescription": "무한칭찬앱 프로젝트 구조 그래프",
+  "languages": [
+    "config",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "markdown",
+    "typescript",
+    "unknown"
+  ],
+  "frameworks": [
+    "React",
+    "TypeScript",
+    "Vite"
+  ],
+  "scriptCompleted": true,
+  "files": [
+    {
+      "path": ".agents/skills/graphify/.graphify_version",
+      "language": "unknown",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".agents/skills/graphify/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 1317,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 3,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".claude/settings.json",
+      "language": "json",
+      "sizeLines": 14,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".claude/skills/graphify/.graphify_version",
+      "language": "unknown",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".claude/skills/graphify/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 1156,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".codex/hooks.json",
+      "language": "json",
+      "sizeLines": 14,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 1,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".graphifyignore",
+      "language": "unknown",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "unknown",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 5,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/knowledge-graph.json",
+      "language": "json",
+      "sizeLines": 26672,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/meta.json",
+      "language": "json",
+      "sizeLines": 8,
+      "fileCategory": "config"
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 91,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-06-implementation-plan.md",
+      "language": "markdown",
+      "sizeLines": 1380,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-06-non-llm-tts-implementation-plan.md",
+      "language": "markdown",
+      "sizeLines": 238,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-06-product-spec.md",
+      "language": "markdown",
+      "sizeLines": 333,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-06-situation-emotion-tts-spec.md",
+      "language": "markdown",
+      "sizeLines": 185,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-drama-dialogue-praise-research.md",
+      "language": "markdown",
+      "sizeLines": 224,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-famous-line-scene-ux-product-review.md",
+      "language": "markdown",
+      "sizeLines": 289,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-famous-lines-quote-pack-research.md",
+      "language": "markdown",
+      "sizeLines": 190,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-gemini-tts-cli-prep.md",
+      "language": "markdown",
+      "sizeLines": 78,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-instant-one-line-mvp-plan.md",
+      "language": "markdown",
+      "sizeLines": 219,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-instant-one-line-mvp-review.md",
+      "language": "markdown",
+      "sizeLines": 256,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-market-research-habit-focus-apps.md",
+      "language": "markdown",
+      "sizeLines": 161,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-mental-one-line-category-research.md",
+      "language": "markdown",
+      "sizeLines": 180,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-product-brief-v0.1.md",
+      "language": "markdown",
+      "sizeLines": 400,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-product-spec-v2-companion.md",
+      "language": "markdown",
+      "sizeLines": 212,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-scene-choice-copy-draft.md",
+      "language": "markdown",
+      "sizeLines": 141,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-07-ui-product-upgrade-plan.md",
+      "language": "markdown",
+      "sizeLines": 221,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-08-gpt-opinion-review.md",
+      "language": "markdown",
+      "sizeLines": 90,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-08-praise-me-mvp-spec.md",
+      "language": "markdown",
+      "sizeLines": 353,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-13-local-audio-script-final.md",
+      "language": "markdown",
+      "sizeLines": 79,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-13-local-audio-script-v0.1.md",
+      "language": "markdown",
+      "sizeLines": 71,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-13-praise-me-design-brief.md",
+      "language": "markdown",
+      "sizeLines": 198,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-13-praise-me-product-planning-review.md",
+      "language": "markdown",
+      "sizeLines": 361,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/2026-06-15-praise-nag-reminder-pivot-draft.md",
+      "language": "markdown",
+      "sizeLines": 330,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/implementation-plan.md",
+      "language": "markdown",
+      "sizeLines": 714,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/product-plan.md",
+      "language": "markdown",
+      "sizeLines": 549,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/plans/README.md",
+      "language": "markdown",
+      "sizeLines": 16,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/README.md",
+      "language": "markdown",
+      "sizeLines": 14,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/reviews/README.md",
+      "language": "markdown",
+      "sizeLines": 9,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/reviews/review.md",
+      "language": "markdown",
+      "sizeLines": 210,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-06-app-i18n-default.md",
+      "language": "markdown",
+      "sizeLines": 22,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-06-app-platform-standard.md",
+      "language": "markdown",
+      "sizeLines": 42,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-06-direct-praise-tts-pivot.md",
+      "language": "markdown",
+      "sizeLines": 63,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-core-implementation-start.md",
+      "language": "markdown",
+      "sizeLines": 84,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-drama-dialogue-research.md",
+      "language": "markdown",
+      "sizeLines": 40,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-english-title.md",
+      "language": "markdown",
+      "sizeLines": 38,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-famous-line-scene-ux-review.md",
+      "language": "markdown",
+      "sizeLines": 37,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-famous-lines-quote-pack-research.md",
+      "language": "markdown",
+      "sizeLines": 40,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-gemini-tts-cli-prep.md",
+      "language": "markdown",
+      "sizeLines": 50,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-instant-one-line-mvp-plan.md",
+      "language": "markdown",
+      "sizeLines": 40,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-instant-one-line-mvp-review.md",
+      "language": "markdown",
+      "sizeLines": 45,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-market-research-habit-focus-apps.md",
+      "language": "markdown",
+      "sizeLines": 54,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-market-research-repivot.md",
+      "language": "markdown",
+      "sizeLines": 35,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-mental-one-line-category-research.md",
+      "language": "markdown",
+      "sizeLines": 48,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-praise-copy-variation-fix.md",
+      "language": "markdown",
+      "sizeLines": 50,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-product-brief-refinement.md",
+      "language": "markdown",
+      "sizeLines": 60,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-scene-choice-copy-draft.md",
+      "language": "markdown",
+      "sizeLines": 34,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-tender-calm-tts-test.md",
+      "language": "markdown",
+      "sizeLines": 44,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-ui-product-review.md",
+      "language": "markdown",
+      "sizeLines": 74,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-voice-copy-quality-fix.md",
+      "language": "markdown",
+      "sizeLines": 54,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-07-web-ui-implementation.md",
+      "language": "markdown",
+      "sizeLines": 63,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-08-gpt-opinion-review.md",
+      "language": "markdown",
+      "sizeLines": 45,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-08-praise-me-design-mvp.md",
+      "language": "markdown",
+      "sizeLines": 77,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-08-praise-me-mvp-spec.md",
+      "language": "markdown",
+      "sizeLines": 63,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-audio-ready-implementation.md",
+      "language": "markdown",
+      "sizeLines": 59,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-infinite-praise-planning-design-qa-security-review-codex.md",
+      "language": "markdown",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-local-audio-script-final.md",
+      "language": "markdown",
+      "sizeLines": 35,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-local-audio-script-v0.1.md",
+      "language": "markdown",
+      "sizeLines": 51,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-pairtune-rollback-platform-stubs.md",
+      "language": "markdown",
+      "sizeLines": 75,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-praise-me-design-brief.md",
+      "language": "markdown",
+      "sizeLines": 46,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-praise-me-product-planning-review.md",
+      "language": "markdown",
+      "sizeLines": 73,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-ux-elevenlabs-review.md",
+      "language": "markdown",
+      "sizeLines": 80,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-13-무한칭찬앱-i18n-platform-readiness.md",
+      "language": "markdown",
+      "sizeLines": 37,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-15-praise-nag-reminder-pivot-draft.md",
+      "language": "markdown",
+      "sizeLines": 57,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-15-praise-reminder-final-plan-codex.md",
+      "language": "markdown",
+      "sizeLines": 59,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-16-notification-policy-check.md",
+      "language": "markdown",
+      "sizeLines": 97,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-16-praise-reminder-subagent-implementation-plan-codex.md",
+      "language": "markdown",
+      "sizeLines": 61,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-16-praise-reminder-v01-v02-implementation-codex.md",
+      "language": "markdown",
+      "sizeLines": 124,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/2026-06-16-praise-reminder-v03-plan-codex.md",
+      "language": "markdown",
+      "sizeLines": 49,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "ai/session-logs/README.md",
+      "language": "markdown",
+      "sizeLines": 16,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 91,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "index.html",
+      "language": "html",
+      "sizeLines": 12,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "package.json",
+      "language": "json",
+      "sizeLines": 32,
+      "fileCategory": "config"
+    },
+    {
+      "path": "public/assets/audio/v0.1/.gitkeep",
+      "language": "unknown",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "public/assets/audio/v0.1/README.md",
+      "language": "markdown",
+      "sizeLines": 60,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "scripts/tts/gemini-tts.mjs",
+      "language": "javascript",
+      "sizeLines": 218,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/App.tsx",
+      "language": "typescript",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/deepPraise.ts",
+      "language": "typescript",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/praiseCatalog.ts",
+      "language": "typescript",
+      "sizeLines": 132,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/praiseReceipt.ts",
+      "language": "typescript",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/praiseRepository.ts",
+      "language": "typescript",
+      "sizeLines": 75,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/praiseSelector.ts",
+      "language": "typescript",
+      "sizeLines": 113,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/ttsPrompt.ts",
+      "language": "typescript",
+      "sizeLines": 63,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/core/voiceScript.ts",
+      "language": "typescript",
+      "sizeLines": 82,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/data/audio-manifest.v0.1.json",
+      "language": "json",
+      "sizeLines": 31,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/data/message-templates.v0.1.json",
+      "language": "json",
+      "sizeLines": 141,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/data/quote-pack.v0.1.json",
+      "language": "json",
+      "sizeLines": 495,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/domain/reminders/repository.ts",
+      "language": "typescript",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/domain/reminders/schedule.ts",
+      "language": "typescript",
+      "sizeLines": 132,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/domain/reminders/schema.ts",
+      "language": "typescript",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/domain/reminders/templates.ts",
+      "language": "typescript",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/features/reminder/ReminderApp.tsx",
+      "language": "typescript",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/features/reminder/ReminderCreate.tsx",
+      "language": "typescript",
+      "sizeLines": 193,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/features/reminder/ReminderDetail.tsx",
+      "language": "typescript",
+      "sizeLines": 143,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/features/reminder/ReminderHome.tsx",
+      "language": "typescript",
+      "sizeLines": 86,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/features/reminder/reminderViewModel.ts",
+      "language": "typescript",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/i18n.ts",
+      "language": "typescript",
+      "sizeLines": 361,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/main.tsx",
+      "language": "typescript",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/platform/adapters.ts",
+      "language": "typescript",
+      "sizeLines": 185,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/styles.css",
+      "language": "css",
+      "sizeLines": 990,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "src/test/setup.ts",
+      "language": "typescript",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/App.test.tsx",
+      "language": "typescript",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/geminiTtsCli.test.ts",
+      "language": "typescript",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/i18n.test.ts",
+      "language": "typescript",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/platformAdapters.test.ts",
+      "language": "typescript",
+      "sizeLines": 64,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/praiseCatalog.test.ts",
+      "language": "typescript",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/praiseReceipt.test.ts",
+      "language": "typescript",
+      "sizeLines": 80,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/praiseRepository.test.ts",
+      "language": "typescript",
+      "sizeLines": 60,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/praiseSelector.test.ts",
+      "language": "typescript",
+      "sizeLines": 115,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/quotePackData.test.ts",
+      "language": "typescript",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/reminderRepository.test.ts",
+      "language": "typescript",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/reminderSchedule.test.ts",
+      "language": "typescript",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/reminderSchema.test.ts",
+      "language": "typescript",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/reminderTemplates.test.ts",
+      "language": "typescript",
+      "sizeLines": 91,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/ttsPrompt.test.ts",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "test/voiceScript.test.ts",
+      "language": "typescript",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "tsconfig.json",
+      "language": "json",
+      "sizeLines": 17,
+      "fileCategory": "config"
+    },
+    {
+      "path": "vitest.config.ts",
+      "language": "typescript",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 131,
+  "filteredByIgnore": 165,
+  "estimatedComplexity": "moderate",
+  "stats": {
+    "filesScanned": 131,
+    "byCategory": {
+      "code": 43,
+      "docs": 75,
+      "config": 11,
+      "markup": 2
+    },
+    "byLanguage": {
+      "unknown": 5,
+      "markdown": 75,
+      "json": 10,
+      "config": 1,
+      "html": 1,
+      "javascript": 1,
+      "typescript": 37,
+      "css": 1
+    }
+  },
+  "importMap": {
+    ".agents/skills/graphify/.graphify_version": [],
+    ".agents/skills/graphify/SKILL.md": [],
+    ".claude/CLAUDE.md": [],
+    ".claude/settings.json": [],
+    ".claude/skills/graphify/.graphify_version": [],
+    ".claude/skills/graphify/SKILL.md": [],
+    ".codex/hooks.json": [],
+    ".env.example": [],
+    ".graphifyignore": [],
+    ".understand-anything/.understandignore": [],
+    ".understand-anything/config.json": [],
+    ".understand-anything/knowledge-graph.json": [],
+    ".understand-anything/meta.json": [],
+    "AGENTS.md": [],
+    "ai/plans/2026-06-06-implementation-plan.md": [],
+    "ai/plans/2026-06-06-non-llm-tts-implementation-plan.md": [],
+    "ai/plans/2026-06-06-product-spec.md": [],
+    "ai/plans/2026-06-06-situation-emotion-tts-spec.md": [],
+    "ai/plans/2026-06-07-drama-dialogue-praise-research.md": [],
+    "ai/plans/2026-06-07-famous-line-scene-ux-product-review.md": [],
+    "ai/plans/2026-06-07-famous-lines-quote-pack-research.md": [],
+    "ai/plans/2026-06-07-gemini-tts-cli-prep.md": [],
+    "ai/plans/2026-06-07-instant-one-line-mvp-plan.md": [],
+    "ai/plans/2026-06-07-instant-one-line-mvp-review.md": [],
+    "ai/plans/2026-06-07-market-research-habit-focus-apps.md": [],
+    "ai/plans/2026-06-07-mental-one-line-category-research.md": [],
+    "ai/plans/2026-06-07-product-brief-v0.1.md": [],
+    "ai/plans/2026-06-07-product-spec-v2-companion.md": [],
+    "ai/plans/2026-06-07-scene-choice-copy-draft.md": [],
+    "ai/plans/2026-06-07-ui-product-upgrade-plan.md": [],
+    "ai/plans/2026-06-08-gpt-opinion-review.md": [],
+    "ai/plans/2026-06-08-praise-me-mvp-spec.md": [],
+    "ai/plans/2026-06-13-local-audio-script-final.md": [],
+    "ai/plans/2026-06-13-local-audio-script-v0.1.md": [],
+    "ai/plans/2026-06-13-praise-me-design-brief.md": [],
+    "ai/plans/2026-06-13-praise-me-product-planning-review.md": [],
+    "ai/plans/2026-06-15-praise-nag-reminder-pivot-draft.md": [],
+    "ai/plans/implementation-plan.md": [],
+    "ai/plans/product-plan.md": [],
+    "ai/plans/README.md": [],
+    "ai/README.md": [],
+    "ai/reviews/README.md": [],
+    "ai/reviews/review.md": [],
+    "ai/session-logs/2026-06-06-app-i18n-default.md": [],
+    "ai/session-logs/2026-06-06-app-platform-standard.md": [],
+    "ai/session-logs/2026-06-06-direct-praise-tts-pivot.md": [],
+    "ai/session-logs/2026-06-07-core-implementation-start.md": [],
+    "ai/session-logs/2026-06-07-drama-dialogue-research.md": [],
+    "ai/session-logs/2026-06-07-english-title.md": [],
+    "ai/session-logs/2026-06-07-famous-line-scene-ux-review.md": [],
+    "ai/session-logs/2026-06-07-famous-lines-quote-pack-research.md": [],
+    "ai/session-logs/2026-06-07-gemini-tts-cli-prep.md": [],
+    "ai/session-logs/2026-06-07-instant-one-line-mvp-plan.md": [],
+    "ai/session-logs/2026-06-07-instant-one-line-mvp-review.md": [],
+    "ai/session-logs/2026-06-07-market-research-habit-focus-apps.md": [],
+    "ai/session-logs/2026-06-07-market-research-repivot.md": [],
+    "ai/session-logs/2026-06-07-mental-one-line-category-research.md": [],
+    "ai/session-logs/2026-06-07-praise-copy-variation-fix.md": [],
+    "ai/session-logs/2026-06-07-product-brief-refinement.md": [],
+    "ai/session-logs/2026-06-07-scene-choice-copy-draft.md": [],
+    "ai/session-logs/2026-06-07-tender-calm-tts-test.md": [],
+    "ai/session-logs/2026-06-07-ui-product-review.md": [],
+    "ai/session-logs/2026-06-07-voice-copy-quality-fix.md": [],
+    "ai/session-logs/2026-06-07-web-ui-implementation.md": [],
+    "ai/session-logs/2026-06-08-gpt-opinion-review.md": [],
+    "ai/session-logs/2026-06-08-praise-me-design-mvp.md": [],
+    "ai/session-logs/2026-06-08-praise-me-mvp-spec.md": [],
+    "ai/session-logs/2026-06-13-audio-ready-implementation.md": [],
+    "ai/session-logs/2026-06-13-infinite-praise-planning-design-qa-security-review-codex.md": [],
+    "ai/session-logs/2026-06-13-local-audio-script-final.md": [],
+    "ai/session-logs/2026-06-13-local-audio-script-v0.1.md": [],
+    "ai/session-logs/2026-06-13-pairtune-rollback-platform-stubs.md": [],
+    "ai/session-logs/2026-06-13-praise-me-design-brief.md": [],
+    "ai/session-logs/2026-06-13-praise-me-product-planning-review.md": [],
+    "ai/session-logs/2026-06-13-ux-elevenlabs-review.md": [],
+    "ai/session-logs/2026-06-13-무한칭찬앱-i18n-platform-readiness.md": [],
+    "ai/session-logs/2026-06-15-praise-nag-reminder-pivot-draft.md": [],
+    "ai/session-logs/2026-06-15-praise-reminder-final-plan-codex.md": [],
+    "ai/session-logs/2026-06-16-notification-policy-check.md": [],
+    "ai/session-logs/2026-06-16-praise-reminder-subagent-implementation-plan-codex.md": [],
+    "ai/session-logs/2026-06-16-praise-reminder-v01-v02-implementation-codex.md": [],
+    "ai/session-logs/2026-06-16-praise-reminder-v03-plan-codex.md": [],
+    "ai/session-logs/README.md": [],
+    "CLAUDE.md": [],
+    "index.html": [],
+    "package.json": [],
+    "public/assets/audio/v0.1/.gitkeep": [],
+    "public/assets/audio/v0.1/README.md": [],
+    "scripts/tts/gemini-tts.mjs": [],
+    "src/App.tsx": [
+      "src/features/reminder/ReminderApp.tsx",
+      "src/i18n.ts",
+      "src/platform/adapters.ts"
+    ],
+    "src/core/deepPraise.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "src/core/praiseCatalog.ts": [
+      "src/core/praiseRepository.ts",
+      "src/core/praiseSelector.ts"
+    ],
+    "src/core/praiseReceipt.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "src/core/praiseRepository.ts": [],
+    "src/core/praiseSelector.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "src/core/ttsPrompt.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "src/core/voiceScript.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "src/data/audio-manifest.v0.1.json": [],
+    "src/data/message-templates.v0.1.json": [],
+    "src/data/quote-pack.v0.1.json": [],
+    "src/domain/reminders/repository.ts": [
+      "src/domain/reminders/schema.ts"
+    ],
+    "src/domain/reminders/schedule.ts": [
+      "src/domain/reminders/schema.ts"
+    ],
+    "src/domain/reminders/schema.ts": [],
+    "src/domain/reminders/templates.ts": [
+      "src/data/message-templates.v0.1.json",
+      "src/domain/reminders/schema.ts"
+    ],
+    "src/features/reminder/ReminderApp.tsx": [
+      "src/domain/reminders/repository.ts",
+      "src/domain/reminders/schedule.ts",
+      "src/domain/reminders/schema.ts",
+      "src/features/reminder/ReminderCreate.tsx",
+      "src/features/reminder/ReminderDetail.tsx",
+      "src/features/reminder/ReminderHome.tsx",
+      "src/i18n.ts",
+      "src/platform/adapters.ts"
+    ],
+    "src/features/reminder/ReminderCreate.tsx": [
+      "src/domain/reminders/schema.ts",
+      "src/domain/reminders/templates.ts",
+      "src/features/reminder/reminderViewModel.ts",
+      "src/i18n.ts"
+    ],
+    "src/features/reminder/ReminderDetail.tsx": [
+      "src/domain/reminders/schedule.ts",
+      "src/domain/reminders/schema.ts",
+      "src/features/reminder/reminderViewModel.ts",
+      "src/i18n.ts",
+      "src/platform/adapters.ts"
+    ],
+    "src/features/reminder/ReminderHome.tsx": [
+      "src/domain/reminders/schema.ts",
+      "src/features/reminder/reminderViewModel.ts",
+      "src/i18n.ts"
+    ],
+    "src/features/reminder/reminderViewModel.ts": [
+      "src/domain/reminders/schema.ts"
+    ],
+    "src/i18n.ts": [
+      "src/data/quote-pack.v0.1.json",
+      "src/domain/reminders/schema.ts"
+    ],
+    "src/main.tsx": [
+      "src/App.tsx",
+      "src/styles.css"
+    ],
+    "src/platform/adapters.ts": [
+      "src/domain/reminders/repository.ts"
+    ],
+    "src/styles.css": [],
+    "src/test/setup.ts": [],
+    "test/App.test.tsx": [
+      "src/App.tsx"
+    ],
+    "test/geminiTtsCli.test.ts": [],
+    "test/i18n.test.ts": [
+      "src/data/quote-pack.v0.1.json",
+      "src/i18n.ts"
+    ],
+    "test/platformAdapters.test.ts": [
+      "src/platform/adapters.ts"
+    ],
+    "test/praiseCatalog.test.ts": [
+      "src/core/praiseCatalog.ts"
+    ],
+    "test/praiseReceipt.test.ts": [
+      "src/core/praiseReceipt.ts",
+      "src/core/praiseRepository.ts"
+    ],
+    "test/praiseRepository.test.ts": [
+      "src/core/praiseRepository.ts"
+    ],
+    "test/praiseSelector.test.ts": [
+      "src/core/praiseRepository.ts",
+      "src/core/praiseSelector.ts"
+    ],
+    "test/quotePackData.test.ts": [
+      "src/data/audio-manifest.v0.1.json",
+      "src/data/quote-pack.v0.1.json"
+    ],
+    "test/reminderRepository.test.ts": [
+      "src/domain/reminders/repository.ts",
+      "src/domain/reminders/schema.ts"
+    ],
+    "test/reminderSchedule.test.ts": [
+      "src/domain/reminders/schedule.ts",
+      "src/domain/reminders/schema.ts"
+    ],
+    "test/reminderSchema.test.ts": [
+      "src/domain/reminders/schema.ts"
+    ],
+    "test/reminderTemplates.test.ts": [
+      "src/domain/reminders/templates.ts"
+    ],
+    "test/ttsPrompt.test.ts": [
+      "src/core/ttsPrompt.ts"
+    ],
+    "test/voiceScript.test.ts": [
+      "src/core/voiceScript.ts"
+    ],
+    "tsconfig.json": [],
+    "vitest.config.ts": []
+  }
+}

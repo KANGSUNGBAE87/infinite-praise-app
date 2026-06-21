@@ -1,0 +1,141 @@
+{
+  "releaseTemplates": [
+    {
+      "id": "praise-held-today",
+      "mode": "praise",
+      "displayText": "오늘 버틴 것만으로도 잘했어.",
+      "notificationText": "오늘 버틴 것만으로도 정말 잘했어.",
+      "tags": ["endure", "recognition", "daily"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "praise-finished-one",
+      "mode": "praise",
+      "displayText": "하나를 끝까지 닫아낸 것, 분명히 네가 해낸 일이야.",
+      "notificationText": "하나를 끝까지 닫아낸 너, 오늘도 해냈어.",
+      "tags": ["finish", "recognition", "daily"],
+      "status": "release"
+    },
+    {
+      "id": "praise-rest-chosen",
+      "mode": "praise",
+      "displayText": "쉬기로 한 선택도 너를 챙긴 좋은 결정이야.",
+      "notificationText": "쉬기로 한 선택, 오늘의 너를 잘 챙긴 결정이야.",
+      "tags": ["rest", "care", "gentle"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "praise-held-boundary",
+      "mode": "praise",
+      "displayText": "한 번 멈추고 고른 선택이 오늘을 지켜냈어.",
+      "notificationText": "한 번 멈춘 선택이 오늘을 지켜냈어.",
+      "tags": ["boundary", "calm", "choice"],
+      "status": "release"
+    },
+    {
+      "id": "praise-kept-going",
+      "mode": "praise",
+      "displayText": "느려도 계속 온 사람만 남길 수 있는 기록이 있어.",
+      "notificationText": "느려도 계속 온 기록은 사라지지 않아.",
+      "tags": ["steady", "encouragement", "daily"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "nag-soft-three-minutes",
+      "mode": "nag",
+      "intensity": "soft",
+      "displayText": "지금 3분만 손대보자. 작게 시작해도 충분해.",
+      "notificationText": "3분만 시작해보자. 작게 해도 괜찮아.",
+      "tags": ["start", "soft", "small-step"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "nag-soft-one-thing",
+      "mode": "nag",
+      "intensity": "soft",
+      "displayText": "오늘 할 일 하나만 골라서 먼저 열어보자.",
+      "notificationText": "할 일 하나만 먼저 열어보자.",
+      "tags": ["focus", "soft", "daily"],
+      "status": "release"
+    },
+    {
+      "id": "nag-soft-water-break",
+      "mode": "nag",
+      "intensity": "soft",
+      "displayText": "물 한 모금 마시고, 다음 행동 하나만 정해보자.",
+      "notificationText": "물 한 모금, 다음 행동 하나. 지금 해보자.",
+      "tags": ["care", "soft", "reset"],
+      "status": "release"
+    },
+    {
+      "id": "nag-soft-return-now",
+      "mode": "nag",
+      "intensity": "soft",
+      "displayText": "잠깐 흩어졌다면 괜찮아. 지금 다시 돌아오면 돼.",
+      "notificationText": "지금 다시 돌아오면 돼. 한 단계만 해보자.",
+      "tags": ["return", "soft", "attention"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "nag-soft-prepare",
+      "mode": "nag",
+      "intensity": "soft",
+      "displayText": "준비가 완벽하지 않아도 첫 동작은 시작할 수 있어.",
+      "notificationText": "완벽한 준비보다 첫 동작부터 시작하자.",
+      "tags": ["start", "soft", "momentum"],
+      "status": "release"
+    },
+    {
+      "id": "nag-direct-start-now",
+      "mode": "nag",
+      "intensity": "direct",
+      "displayText": "알림 시간입니다. 지금 첫 단계부터 시작하세요.",
+      "notificationText": "지금 시작하세요. 첫 단계부터 하면 됩니다.",
+      "tags": ["start", "direct", "action"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "nag-direct-stop-scroll",
+      "mode": "nag",
+      "intensity": "direct",
+      "displayText": "스크롤을 멈추고, 해야 할 화면을 여세요.",
+      "notificationText": "스크롤을 멈추고 할 일 화면을 여세요.",
+      "tags": ["focus", "direct", "screen"],
+      "status": "release"
+    },
+    {
+      "id": "nag-direct-one-task",
+      "mode": "nag",
+      "intensity": "direct",
+      "displayText": "지금은 하나만 처리할 시간입니다. 목록에서 첫 항목을 고르세요.",
+      "notificationText": "하나만 처리하세요. 첫 항목부터 고르세요.",
+      "tags": ["focus", "direct", "task"],
+      "status": "release"
+    },
+    {
+      "id": "nag-direct-leave-seat",
+      "mode": "nag",
+      "intensity": "direct",
+      "displayText": "몸을 일으키고 다음 장소로 이동하세요. 알림을 행동으로 바꿀 시간입니다.",
+      "notificationText": "몸을 일으키고 이동하세요. 지금 행동할 시간입니다.",
+      "tags": ["move", "direct", "action"],
+      "status": "release",
+      "voiceCandidate": true
+    },
+    {
+      "id": "nag-direct-send-now",
+      "mode": "nag",
+      "intensity": "direct",
+      "displayText": "작성한 내용이 있다면 지금 보내세요. 더 붙잡지 않아도 됩니다.",
+      "notificationText": "작성한 내용이 있다면 지금 보내세요.",
+      "tags": ["send", "direct", "finish"],
+      "status": "release"
+    }
+  ]
+}

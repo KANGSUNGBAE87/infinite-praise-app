@@ -1,0 +1,31 @@
+{
+  "version": "0.1.0",
+  "basePath": "/assets/audio",
+  "assets": [
+    { "id": "encourage-001", "category": "encourage", "fileName": "encourage-001.mp3", "path": "v0.1/encourage-001.mp3", "status": "missing", "voiceStyle": "bright" },
+    { "id": "encourage-002", "category": "encourage", "fileName": "encourage-002.mp3", "path": "v0.1/encourage-002.mp3", "status": "missing", "voiceStyle": "bright" },
+    { "id": "encourage-003", "category": "encourage", "fileName": "encourage-003.mp3", "path": "v0.1/encourage-003.mp3", "status": "missing", "voiceStyle": "bright" },
+    { "id": "encourage-004", "category": "encourage", "fileName": "encourage-004.mp3", "path": "v0.1/encourage-004.mp3", "status": "missing", "voiceStyle": "bright" },
+    { "id": "encourage-005", "category": "encourage", "fileName": "encourage-005.mp3", "path": "v0.1/encourage-005.mp3", "status": "missing", "voiceStyle": "bright" },
+    { "id": "calm-001", "category": "calm", "fileName": "calm-001.mp3", "path": "v0.1/calm-001.mp3", "status": "missing", "voiceStyle": "calm" },
+    { "id": "calm-002", "category": "calm", "fileName": "calm-002.mp3", "path": "v0.1/calm-002.mp3", "status": "missing", "voiceStyle": "calm" },
+    { "id": "calm-003", "category": "calm", "fileName": "calm-003.mp3", "path": "v0.1/calm-003.mp3", "status": "missing", "voiceStyle": "calm" },
+    { "id": "calm-004", "category": "calm", "fileName": "calm-004.mp3", "path": "v0.1/calm-004.mp3", "status": "missing", "voiceStyle": "calm" },
+    { "id": "calm-005", "category": "calm", "fileName": "calm-005.mp3", "path": "v0.1/calm-005.mp3", "status": "missing", "voiceStyle": "calm" },
+    { "id": "comfort-001", "category": "comfort", "fileName": "comfort-001.mp3", "path": "v0.1/comfort-001.mp3", "status": "missing", "voiceStyle": "warm" },
+    { "id": "comfort-002", "category": "comfort", "fileName": "comfort-002.mp3", "path": "v0.1/comfort-002.mp3", "status": "missing", "voiceStyle": "warm" },
+    { "id": "comfort-003", "category": "comfort", "fileName": "comfort-003.mp3", "path": "v0.1/comfort-003.mp3", "status": "missing", "voiceStyle": "warm" },
+    { "id": "comfort-004", "category": "comfort", "fileName": "comfort-004.mp3", "path": "v0.1/comfort-004.mp3", "status": "missing", "voiceStyle": "warm" },
+    { "id": "comfort-005", "category": "comfort", "fileName": "comfort-005.mp3", "path": "v0.1/comfort-005.mp3", "status": "missing", "voiceStyle": "warm" },
+    { "id": "reassure-001", "category": "reassure", "fileName": "reassure-001.mp3", "path": "v0.1/reassure-001.mp3", "status": "missing", "voiceStyle": "firm" },
+    { "id": "reassure-002", "category": "reassure", "fileName": "reassure-002.mp3", "path": "v0.1/reassure-002.mp3", "status": "missing", "voiceStyle": "firm" },
+    { "id": "reassure-003", "category": "reassure", "fileName": "reassure-003.mp3", "path": "v0.1/reassure-003.mp3", "status": "missing", "voiceStyle": "firm" },
+    { "id": "reassure-004", "category": "reassure", "fileName": "reassure-004.mp3", "path": "v0.1/reassure-004.mp3", "status": "missing", "voiceStyle": "firm" },
+    { "id": "reassure-005", "category": "reassure", "fileName": "reassure-005.mp3", "path": "v0.1/reassure-005.mp3", "status": "missing", "voiceStyle": "firm" },
+    { "id": "recognize-001", "category": "recognize", "fileName": "recognize-001.mp3", "path": "v0.1/recognize-001.mp3", "status": "missing", "voiceStyle": "proud" },
+    { "id": "recognize-002", "category": "recognize", "fileName": "recognize-002.mp3", "path": "v0.1/recognize-002.mp3", "status": "missing", "voiceStyle": "proud" },
+    { "id": "recognize-003", "category": "recognize", "fileName": "recognize-003.mp3", "path": "v0.1/recognize-003.mp3", "status": "missing", "voiceStyle": "proud" },
+    { "id": "recognize-004", "category": "recognize", "fileName": "recognize-004.mp3", "path": "v0.1/recognize-004.mp3", "status": "missing", "voiceStyle": "proud" },
+    { "id": "recognize-005", "category": "recognize", "fileName": "recognize-005.mp3", "path": "v0.1/recognize-005.mp3", "status": "missing", "voiceStyle": "proud" }
+  ]
+}

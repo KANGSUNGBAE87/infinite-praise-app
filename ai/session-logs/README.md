@@ -1,5 +1,9 @@
 # Session Logs
 
+Every new project must keep this folder. It may initially contain only this
+README, but the first meaningful planning, implementation, review, QA, release,
+or durable-decision session must add a real dated log.
+
 Save meaningful session change logs here as Markdown using dated filenames, for
 example:
 
