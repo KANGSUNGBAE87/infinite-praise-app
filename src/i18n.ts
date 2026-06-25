@@ -132,12 +132,20 @@ const messages = {
     "weekly.sun": "일",
 
     /* ── Navigation ── */
-    "nav.home": "홈",
-    "nav.vault": "보관함",
-    "nav.settings": "설정",
+	    "nav.home": "홈",
+	    "nav.vault": "보관함",
+	    "nav.settings": "설정",
 
-    /* ── Status ── */
-    "status.loading": "불러오는 중",
+	    /* ── Settings ── */
+	    "settings.title": "설정",
+	    "settings.notificationTitle": "알림",
+	    "settings.notificationStatus": "현재는 앱 안 미리보기만 저장돼요.",
+	    "settings.notificationBody": "실제 알림을 붙일 때는 권한 동의, 문구 검수, 데이터 선언을 다시 확인해야 해요.",
+	    "settings.savedTime": "저장된 시간",
+	    "settings.languageBody": "앱에서 볼 언어를 고를 수 있어요.",
+
+	    /* ── Status ── */
+	    "status.loading": "불러오는 중",
     "status.error": "문제가 생겼어요. 다시 시도해 주세요.",
     "status.empty": "아직 저장된 내용이 없어요.",
     "status.saved": "저장했어요.",
@@ -269,12 +277,20 @@ const messages = {
     "weekly.sun": "Sun",
 
     /* ── Navigation ── */
-    "nav.home": "Home",
-    "nav.vault": "Vault",
-    "nav.settings": "Settings",
+	    "nav.home": "Home",
+	    "nav.vault": "Vault",
+	    "nav.settings": "Settings",
 
-    /* ── Status ── */
-    "status.loading": "Loading",
+	    /* ── Settings ── */
+	    "settings.title": "Settings",
+	    "settings.notificationTitle": "Notifications",
+	    "settings.notificationStatus": "Only in-app previews are saved for now.",
+	    "settings.notificationBody": "Before real notifications, permission consent, copy review, and data declarations need another pass.",
+	    "settings.savedTime": "Saved time",
+	    "settings.languageBody": "Choose the language shown in the app.",
+
+	    /* ── Status ── */
+	    "status.loading": "Loading",
     "status.error": "Something went wrong. Please try again.",
     "status.empty": "Nothing saved yet.",
     "status.saved": "Saved.",

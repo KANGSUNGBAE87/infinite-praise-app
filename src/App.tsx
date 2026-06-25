@@ -228,16 +228,17 @@ export default function App() {
     return i18n.t("result.summaryEdit");
   })();
 
-  const hasActiveSession = state.savedAt !== null;
-  const showHome = hasActiveSession && state.sessionPhase === "initial" && state.step === 4;
-  const weekCare = state.weeklyCare.length === 7 ? state.weeklyCare : [0,0,0,0,0,0,0];
-  const weekCareCount = countWeekCare(weekCare);
+	  const hasActiveSession = state.savedAt !== null;
+	  const showAppFlow = state.navTab === "home";
+	  const showHome = showAppFlow && hasActiveSession && state.sessionPhase === "initial" && state.step === 4;
+	  const weekCare = state.weeklyCare.length === 7 ? state.weeklyCare : [0,0,0,0,0,0,0];
+	  const weekCareCount = countWeekCare(weekCare);
 
   return (
     <main className="app-shell" aria-label={i18n.t("app.aria")}>
       <div className="app-home">
         {/* ────── Progress rail ────── */}
-        {!showHome && (
+	        {showAppFlow && !showHome && (
         <nav className="progress-rail" aria-label={i18n.t("navigation.preview")}>
           {progressLabels.map((labelKey, index) => {
             const dotStep = (index + 1) as Step;
@@ -340,7 +341,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 1: Landing ═══════════ */}
-        {state.step === 1 && (
+	        {showAppFlow && state.step === 1 && (
           <section className="screen-section">
             <div className="language-switcher" aria-label={i18n.t("settings.language")}>
               {localeOptions.map((option) => (
@@ -380,7 +381,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 2: Emotion + Praise Pick ═══════════ */}
-        {state.step === 2 && (
+	        {showAppFlow && state.step === 2 && (
           <section className="screen-section">
             <h2 className="screen-title">{i18n.t("praise.title")}</h2>
 
@@ -444,7 +445,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 3: Rewrite Optional ═══════════ */}
-        {state.step === 3 && (
+	        {showAppFlow && state.step === 3 && (
           <section className="screen-section">
             <h2 className="screen-title">{i18n.t("rewrite.title")}</h2>
             <p className="screen-body">{i18n.t("rewrite.body")}</p>
@@ -500,7 +501,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 4: Time Save + Preview ═══════════ */}
-        {state.step === 4 && !showHome && (
+	        {showAppFlow && state.step === 4 && !showHome && (
           <section className="screen-section">
             <h2 className="screen-title">{i18n.t("schedule.title")}</h2>
             <p className="screen-body">{i18n.t("schedule.body")}</p>
@@ -554,7 +555,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 5: Check-in (reopened) ═══════════ */}
-        {state.step === 5 && state.sessionPhase === "reopened" && (
+	        {showAppFlow && state.step === 5 && state.sessionPhase === "reopened" && (
           <section className="screen-section">
             <h2 className="screen-title">{i18n.t("checkin.title")}</h2>
             <p className="screen-body">{i18n.t("checkin.body")}</p>
@@ -685,7 +686,7 @@ export default function App() {
         )}
 
         {/* ═══════════ SCREEN 6: Result / Fake-door ═══════════ */}
-        {state.step === 6 && state.sessionPhase === "reopened" && (
+	        {showAppFlow && state.step === 6 && state.sessionPhase === "reopened" && (
           <section className="screen-section">
             <h2 className="screen-title">{i18n.t("result.title")}</h2>
 
@@ -732,7 +733,7 @@ export default function App() {
         )}
 
         {/* ═══════════ Language switcher compact (Screens 2-6) ═══════════ */}
-        {state.step >= 2 && !showHome && (
+	        {showAppFlow && state.step >= 2 && !showHome && (
           <div style={{ position: "relative", width: "100%", maxWidth: 430, margin: "0 auto" }}>
             <button
               type="button"
@@ -745,19 +746,21 @@ export default function App() {
           </div>
         )}
 
-        <footer style={{ textAlign: "center", padding: "24px 0 8px", fontSize: 12, color: "var(--pm-text-soft)", fontWeight: 500 }}>
-          <p style={{ margin: 0 }}>{i18n.t("schedule.previewOnly")}</p>
-        </footer>
-      </div>
+	        {showAppFlow && (
+	        <footer style={{ textAlign: "center", padding: "24px 0 8px", fontSize: 12, color: "var(--pm-text-soft)", fontWeight: 500 }}>
+	          <p style={{ margin: 0 }}>{i18n.t("schedule.previewOnly")}</p>
+	        </footer>
+	        )}
+	      </div>
 
-      {/* ────── Bottom Navigation (shown on home and vault) ────── */}
-      {(showHome || state.navTab === "vault") && (
-        <nav className="bottom-nav" aria-label="Main navigation">
-          <button
-            type="button"
-            className={`nav-item${state.navTab === "home" || showHome ? " active" : ""}`}
-            onClick={() => setState((current) => ({ ...current, navTab: "home" }))}
-          >
+	      {/* ────── Bottom Navigation (shown on home and vault) ────── */}
+	      {(showHome || state.navTab === "vault" || state.navTab === "settings") && (
+	        <nav className="bottom-nav" aria-label="Main navigation">
+	          <button
+	            type="button"
+	            className={`nav-item${state.navTab === "home" ? " active" : ""}`}
+	            onClick={() => setState((current) => ({ ...current, navTab: "home" }))}
+	          >
             <span className="nav-icon">🏠</span>
             {i18n.t("nav.home")}
           </button>
@@ -769,20 +772,20 @@ export default function App() {
             <span className="nav-icon">📦</span>
             {i18n.t("nav.vault")}
           </button>
-          <button
-            type="button"
-            className="nav-item"
-            onClick={() => setLocale(locale === "ko" ? "en" : "ko")}
-          >
-            <span className="nav-icon">⚙️</span>
-            {i18n.t("nav.settings")}
+	          <button
+	            type="button"
+	            className={`nav-item${state.navTab === "settings" ? " active" : ""}`}
+	            onClick={() => setState((current) => ({ ...current, navTab: "settings" }))}
+	          >
+	            <span className="nav-icon">⚙️</span>
+	            {i18n.t("nav.settings")}
           </button>
         </nav>
       )}
 
-      {/* ────── Vault view ────── */}
-      {state.navTab === "vault" && !showHome && (
-        <section className="screen-section" style={{ paddingTop: 20 }}>
+	      {/* ────── Vault view ────── */}
+	      {state.navTab === "vault" && !showHome && (
+	        <section className="screen-section" style={{ paddingTop: 20 }}>
           <div className="home-header">
             <h2 className="home-headline">{i18n.t("vault.title")}</h2>
             {state.vaultItems.length > 0 && (
@@ -841,8 +844,51 @@ export default function App() {
               ))}
             </div>
           )}
-        </section>
-      )}
-    </main>
-  );
-}
+	        </section>
+	      )}
+
+	      {/* ────── Settings view ────── */}
+	      {state.navTab === "settings" && !showHome && (
+	        <section className="screen-section" style={{ paddingTop: 20 }}>
+	          <div className="home-header">
+	            <h2 className="home-headline">{i18n.t("settings.title")}</h2>
+	            <p className="home-support">{i18n.t("settings.languageBody")}</p>
+	          </div>
+
+	          <div className="settings-card">
+	            <span className="preview-badge">{i18n.t("schedule.previewOnly")}</span>
+	            <div>
+	              <h3>{i18n.t("settings.notificationTitle")}</h3>
+	              <p>{i18n.t("settings.notificationStatus")}</p>
+	            </div>
+	            <p className="settings-note">{i18n.t("settings.notificationBody")}</p>
+	            <div className="settings-row">
+	              <span>{i18n.t("settings.savedTime")}</span>
+	              <strong>{state.scheduleTime}</strong>
+	            </div>
+	          </div>
+
+	          <div className="settings-card">
+	            <div>
+	              <h3>{i18n.t("settings.language")}</h3>
+	              <p>{i18n.t("settings.languageBody")}</p>
+	            </div>
+	            <div className="language-switcher" aria-label={i18n.t("settings.language")}>
+	              {localeOptions.map((option) => (
+	                <button
+	                  key={option.id}
+	                  type="button"
+	                  className={`lang-option${locale === option.id ? " is-selected" : ""}`}
+	                  aria-pressed={locale === option.id}
+	                  onClick={() => setLocale(option.id)}
+	                >
+	                  {option.label}
+	                </button>
+	              ))}
+	            </div>
+	          </div>
+	        </section>
+	      )}
+	    </main>
+	  );
+	}

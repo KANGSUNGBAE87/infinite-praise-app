@@ -36,6 +36,17 @@ describe("칭찬해줘 v0.4 home + check-in flow", () => {
     }
   };
   const countEvent = (name: string) => trackedEvents.filter((event) => event.eventName === name).length;
+  const saveFirstLineAndOpenHome = async (user: ReturnType<typeof userEvent.setup>) => {
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "오늘의 한 줄 고르기" }));
+    await user.click(screen.getByRole("button", { name: /오늘 버틴 것만으로도 충분히 잘했어/ }));
+    await user.click(screen.getByRole("button", { name: "이 한 줄로 할게요" }));
+    await user.clear(screen.getByRole("textbox"));
+    await user.type(screen.getByRole("textbox"), "오늘은 할 만큼 했어.");
+    await user.click(screen.getByRole("button", { name: "이 문장으로 저장" }));
+    await user.click(screen.getByRole("button", { name: "저장하고 미리보기" }));
+  };
 
   beforeEach(() => {
     trackedEvents.length = 0;
@@ -248,6 +259,30 @@ describe("칭찬해줘 v0.4 home + check-in flow", () => {
     await user.click(screen.getByRole("button", { name: "도움됐어" }));
     expect(screen.getByRole("heading", { name: "확인 완료" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "어제의 한 줄, 오늘은 어땠어요?" })).not.toBeInTheDocument();
+  });
+
+  it("opens the vault tab from the saved home dashboard", async () => {
+    const user = userEvent.setup();
+    await saveFirstLineAndOpenHome(user);
+
+    await user.click(screen.getByRole("button", { name: /보관함/ }));
+
+    expect(screen.getByRole("heading", { name: "보관함" })).toBeInTheDocument();
+    expect(screen.getByText(/아직 보관한 한 줄이 없어요/)).toBeInTheDocument();
+    expect(screen.queryByText("오늘도 나를 너무 몰아붙이지 말아요")).not.toBeInTheDocument();
+  });
+
+  it("opens notification and language settings from the saved home dashboard", async () => {
+    const user = userEvent.setup();
+    await saveFirstLineAndOpenHome(user);
+
+    await user.click(screen.getByRole("button", { name: /설정/ }));
+
+    expect(screen.getByRole("heading", { name: "설정" })).toBeInTheDocument();
+    expect(screen.getByText("알림")).toBeInTheDocument();
+    expect(screen.getByText("현재는 앱 안 미리보기만 저장돼요.")).toBeInTheDocument();
+    expect(screen.getByText("언어")).toBeInTheDocument();
+    expect(screen.queryByText("오늘도 나를 너무 몰아붙이지 말아요")).not.toBeInTheDocument();
   });
 
   it("persists locale and switches to English", async () => {

@@ -937,6 +937,68 @@ button:disabled {
   margin-top: 4px;
 }
 
+/* ─────────────── Settings card ─────────────── */
+.settings-card {
+  display: grid;
+  gap: 14px;
+  padding: var(--pm-space-card);
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-card);
+  box-shadow: var(--pm-shadow-card);
+}
+
+.settings-card h3 {
+  margin: 0;
+  color: var(--pm-text-strong);
+  font-size: 18px;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.settings-card p {
+  margin: 6px 0 0;
+  color: var(--pm-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.settings-card .preview-badge {
+  justify-self: start;
+  padding: 6px 12px;
+  color: var(--pm-primary);
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--pm-primary-soft);
+  border-radius: var(--pm-radius-pill);
+}
+
+.settings-card .settings-note {
+  padding: 12px 14px;
+  background: var(--pm-surface-soft);
+  border-radius: var(--pm-radius-control);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding-top: 2px;
+  color: var(--pm-text-muted);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.settings-row strong {
+  color: var(--pm-text-strong);
+  font-size: 18px;
+  font-weight: 800;
+}
+
 /* ─────────────── Button stack ─────────────── */
 .button-stack {
   display: grid;
