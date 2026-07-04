@@ -9,7 +9,7 @@ describe("i18n", () => {
     expect(isLocale("ja")).toBe(false);
 
     const en = createI18n("en");
-    expect(en.t("app.title")).toBe("Praise Me");
-    expect(en.t("app.subtitle")).toBe("One line a day, be a little kinder to yourself.");
+    expect(en.t("app.title")).toBe("A Word for Me");
+    expect(en.t("app.subtitle")).toBe("Praise or a nudge, shaped for right now.");
   });
 });

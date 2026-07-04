@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createI18n, isLocale, localeOptions, type Locale } from "./i18n";
 import { sanitizeAnalytics } from "./core/analyticsSanitizer";
+import { createMessageGenerationAdapter, type MessageCandidate, type MessageMode } from "./core/messageGeneration";
 import { createMvpPlatformAdapters } from "./platform/adapters";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
@@ -17,18 +18,29 @@ type AppState = {
   sourceTag: string;
   step: Step;
   targetConfirmed: boolean;
+  messageMode: MessageMode;
+  generationContext: string;
+  generationStatus: "idle" | "loading" | "success" | "fallback" | "blocked" | "error";
+  generatedCandidates: MessageCandidate[];
+  selectedCandidateId: string | null;
+  aiDisclosureSeen: boolean;
+  reportedCandidateIds: string[];
   selectedPraiseId: string | null;
   selectedPraise: string;
+  selectedNotificationText: string;
   selectedEmotion: string | null;
   rewriteText: string;
   scheduleTime: string;
   previewText: string;
+  notificationStatus: "idle" | "unsupported" | "prompt" | "denied" | "scheduled" | "blocked";
+  notificationMessage: string;
   checkinAction: CheckinAction | null;
   reopenSource: "manual" | "notification" | "unknown";
   safetyState: "safe" | "caution" | "blocked";
   interestAction: InterestAction | null;
   sessionPhase: "initial" | "reopened";
   savedAt: number | null;
+  scheduleTimes: string[];
   vaultItems: VaultItem[];
   weeklyCare: number[];
   navTab: "home" | "vault" | "settings";
@@ -72,7 +84,29 @@ const emotionChips = [
   { id: "e4", icon: "💜", color: "lilac", i18nKey: "emotion.e4", descKey: "emotion.e4desc" },
 ] as const;
 
+const candidateStyleKeys: Record<string, string> = {
+  warm: "candidate.style.warm",
+  short: "candidate.style.short",
+  practical: "candidate.style.practical",
+  calm: "candidate.style.calm",
+  direct: "candidate.style.direct",
+};
+
 const weekDayKeys = ["weekly.sun", "weekly.mon", "weekly.tue", "weekly.wed", "weekly.thu", "weekly.fri", "weekly.sat"] as const;
+const defaultScheduleTime = "21:30";
+const quickTimeOptions = [
+  { id: "morning", time: "08:00", labelKey: "schedule.quick.morning" },
+  { id: "lunch", time: "12:30", labelKey: "schedule.quick.lunch" },
+  { id: "evening", time: "21:30", labelKey: "schedule.quick.evening" },
+  { id: "bed", time: "23:00", labelKey: "schedule.quick.bed" },
+] as const;
+
+type TimePickerState = {
+  open: boolean;
+  mode: "add" | "edit";
+  index: number | null;
+  draftTime: string;
+};
 
 function getTodayIndex(): number {
   return new Date().getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
@@ -90,8 +124,92 @@ function countWeekCare(arr: number[]): number {
   return arr.filter(v => v === 1).length;
 }
 
+function getNextScheduledAt(time: string): number {
+  const [hourText, minuteText] = time.split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  const now = new Date();
+  const target = new Date(now);
+  target.setHours(Number.isFinite(hour) ? hour : 21, Number.isFinite(minute) ? minute : 30, 0, 0);
+  if (target.getTime() <= now.getTime()) target.setDate(target.getDate() + 1);
+  return target.getTime();
+}
+
+function isValidTime(value: string | null | undefined): value is string {
+  if (!value) return false;
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+}
+
+function normalizeScheduleTimes(times: string[] | undefined, fallback?: string): string[] {
+  const candidates = [...(times ?? []), fallback ?? ""];
+  const unique = candidates.filter(isValidTime).filter((time, index, list) => list.indexOf(time) === index);
+  return unique.length > 0 ? unique : [defaultScheduleTime];
+}
+
+function getStateScheduleTimes(state: Pick<AppState, "scheduleTimes" | "scheduleTime">): string[] {
+  return normalizeScheduleTimes(state.scheduleTimes, state.scheduleTime);
+}
+
+function parseTimeParts(time: string): { hour: number; minute: number } {
+  const [hourText, minuteText] = time.split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  return {
+    hour: Number.isFinite(hour) ? Math.max(0, Math.min(23, hour)) : 21,
+    minute: Number.isFinite(minute) ? Math.max(0, Math.min(59, minute)) : 30,
+  };
+}
+
+function toTimeString(hour: number, minute: number): string {
+  const normalizedHour = ((hour % 24) + 24) % 24;
+  const normalizedMinute = ((minute % 60) + 60) % 60;
+  return `${String(normalizedHour).padStart(2, "0")}:${String(normalizedMinute).padStart(2, "0")}`;
+}
+
+function addMinutesToTime(time: string, minutesToAdd: number): string {
+  const { hour, minute } = parseTimeParts(time);
+  const dayMinutes = 24 * 60;
+  const nextTotal = (((hour * 60 + minute + minutesToAdd) % dayMinutes) + dayMinutes) % dayMinutes;
+  return toTimeString(Math.floor(nextTotal / 60), nextTotal % 60);
+}
+
+function setTimePeriod(time: string, period: "am" | "pm"): string {
+  const { hour, minute } = parseTimeParts(time);
+  const hour12 = hour % 12;
+  return toTimeString(period === "am" ? hour12 : hour12 + 12, minute);
+}
+
+function formatTimeLabel(time: string, locale: Locale): string {
+  const { hour, minute } = parseTimeParts(time);
+  const displayMinute = String(minute).padStart(2, "0");
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  if (locale === "ko") {
+    return `${hour < 12 ? "오전" : "오후"} ${String(hour12).padStart(2, "0")}:${displayMinute}`;
+  }
+  return `${hour12}:${displayMinute} ${hour < 12 ? "AM" : "PM"}`;
+}
+
+function formatScheduleSummary(times: string[], locale: Locale): string {
+  const normalized = normalizeScheduleTimes(times);
+  const labels = normalized.map((time) => formatTimeLabel(time, locale));
+  if (labels.length <= 2) return labels.join(locale === "ko" ? ", " : ", ");
+  return locale === "ko" ? `${labels[0]} 외 ${labels.length - 1}개` : `${labels[0]} +${labels.length - 1} more`;
+}
+
+function createPersistedState(state: AppState): AppState {
+  return {
+    ...state,
+    generationContext: "",
+    generatedCandidates: [],
+    selectedCandidateId: null,
+    reportedCandidateIds: [],
+    generationStatus: state.generationStatus === "loading" ? "idle" : state.generationStatus,
+  };
+}
+
 export default function App() {
   const platformAdapters = useMemo(() => createMvpPlatformAdapters(), []);
+  const messageGeneration = useMemo(() => createMessageGenerationAdapter(), []);
   const [locale, setLocale] = useState<Locale>(() => {
     const stored = platformAdapters.storage.loadLocale();
     return isLocale(stored) ? stored : "ko";
@@ -102,12 +220,23 @@ export default function App() {
     sourceTag: "channel-direct",
     step: 1,
     targetConfirmed: false,
+    messageMode: "praise",
+    generationContext: "",
+    generationStatus: "idle",
+    generatedCandidates: [],
+    selectedCandidateId: null,
+    aiDisclosureSeen: false,
+    reportedCandidateIds: [],
     selectedPraiseId: null,
     selectedPraise: "",
+    selectedNotificationText: "",
     selectedEmotion: null,
     rewriteText: "",
-    scheduleTime: "21:30",
+    scheduleTime: defaultScheduleTime,
+    scheduleTimes: [defaultScheduleTime],
     previewText: "",
+    notificationStatus: "idle",
+    notificationMessage: "",
     checkinAction: null,
     reopenSource: "manual",
     safetyState: "safe",
@@ -132,11 +261,15 @@ export default function App() {
           ...createDefaultState(),
           ...parsedState,
           step: reopenedStep >= 5 ? 5 : 5,
+          scheduleTime: getStateScheduleTimes({ ...createDefaultState(), ...parsedState })[0] ?? defaultScheduleTime,
+          scheduleTimes: getStateScheduleTimes({ ...createDefaultState(), ...parsedState }),
           reopenSource: parsedState.reopenSource === "manual" || parsedState.reopenSource === "notification"
             ? parsedState.reopenSource : "unknown",
         };
       }
-      return { ...createDefaultState(), ...parsedState };
+      const mergedState = { ...createDefaultState(), ...parsedState };
+      const scheduleTimes = getStateScheduleTimes(mergedState);
+      return { ...mergedState, scheduleTime: scheduleTimes[0] ?? defaultScheduleTime, scheduleTimes };
     } catch {
       return createDefaultState();
     }
@@ -151,13 +284,19 @@ export default function App() {
   const resultViewRef = useRef<Step>(1);
 
   const [revealed, setRevealed] = useState(false);
+  const [timePickerState, setTimePickerState] = useState<TimePickerState>({
+    open: false,
+    mode: "add",
+    index: null,
+    draftTime: defaultScheduleTime,
+  });
 
   useEffect(() => {
     platformAdapters.storage.saveLocale(locale);
   }, [locale, platformAdapters.storage]);
 
   useEffect(() => {
-    platformAdapters.storage.setItem("state", JSON.stringify(state));
+    platformAdapters.storage.setItem("state", JSON.stringify(createPersistedState(state)));
   }, [state, platformAdapters.storage]);
 
   const announce = (eventName: string, properties: Record<string, unknown>) => {
@@ -170,6 +309,8 @@ export default function App() {
   }, []);
 
   const selectedPreview = state.previewText || i18n.t("preview.fallback");
+  const scheduleTimes = getStateScheduleTimes(state);
+  const scheduleSummary = formatScheduleSummary(scheduleTimes, locale);
   const rewriteMessage: { message: string; safety: "safe" | "caution" | "blocked" } = (() => {
     const text = state.rewriteText.trim();
     if (!text) return { message: "", safety: "safe" as const };
@@ -218,6 +359,151 @@ export default function App() {
     announce("praise_selected", { id, text });
   };
 
+  const generateCandidates = async () => {
+    const context = state.generationContext.trim();
+    setState((current) => ({
+      ...current,
+      aiDisclosureSeen: true,
+      generationStatus: "loading",
+      generatedCandidates: [],
+      selectedCandidateId: null,
+      selectedPraise: "",
+      selectedNotificationText: "",
+      rewriteText: "",
+    }));
+    announce("ai_generation_requested", { source: state.sourceTag, choice: state.messageMode });
+    const result = await messageGeneration.generate({ mode: state.messageMode, context, locale });
+    if (result.decision === "blocked") {
+      setState((current) => ({
+        ...current,
+        generationStatus: "blocked",
+        generatedCandidates: [],
+      }));
+      announce("ai_generation_blocked", { source: state.sourceTag, choice: state.messageMode, status: result.reasonCode ?? "blocked" });
+      return;
+    }
+    setState((current) => ({
+      ...current,
+      generationStatus: result.source === "ai" ? "success" : "fallback",
+      generatedCandidates: result.candidates,
+      aiDisclosureSeen: true,
+    }));
+    announce("ai_candidates_generated", { source: state.sourceTag, choice: state.messageMode, status: result.source });
+  };
+
+  const selectCandidate = (candidate: MessageCandidate) => {
+    setState((current) => ({
+      ...current,
+      selectedCandidateId: candidate.id,
+      selectedPraiseId: candidate.id,
+      selectedPraise: candidate.text,
+      selectedNotificationText: candidate.notificationText,
+      rewriteText: candidate.text,
+    }));
+    announce("ai_candidate_selected", { source: state.sourceTag, choice: candidate.mode, variant: candidate.style });
+  };
+
+  const openTimePicker = (index: number | null) => {
+    const currentTimes = getStateScheduleTimes(state);
+    setTimePickerState({
+      open: true,
+      mode: index === null ? "add" : "edit",
+      index,
+      draftTime: index === null ? currentTimes[currentTimes.length - 1] ?? defaultScheduleTime : currentTimes[index] ?? defaultScheduleTime,
+    });
+  };
+
+  const closeTimePicker = () => {
+    setTimePickerState((current) => ({ ...current, open: false }));
+  };
+
+  const commitTimePicker = () => {
+    setState((current) => {
+      const currentTimes = getStateScheduleTimes(current);
+      const nextTimes = timePickerState.mode === "edit" && timePickerState.index !== null
+        ? currentTimes.map((time, index) => (index === timePickerState.index ? timePickerState.draftTime : time))
+        : [...currentTimes, timePickerState.draftTime];
+      const normalizedTimes = normalizeScheduleTimes(nextTimes);
+      return {
+        ...current,
+        scheduleTime: normalizedTimes[0] ?? defaultScheduleTime,
+        scheduleTimes: normalizedTimes,
+      };
+    });
+    closeTimePicker();
+  };
+
+  const removeScheduleTime = (indexToRemove: number) => {
+    setState((current) => {
+      const nextTimes = getStateScheduleTimes(current).filter((_, index) => index !== indexToRemove);
+      const normalizedTimes = normalizeScheduleTimes(nextTimes);
+      return {
+        ...current,
+        scheduleTime: normalizedTimes[0] ?? defaultScheduleTime,
+        scheduleTimes: normalizedTimes,
+      };
+    });
+  };
+
+  const scheduleSelectedMessage = async () => {
+    announce("schedule_started", { source: state.sourceTag, sourceTag: state.sourceTag });
+    const now = Date.now();
+    const finalText = state.selectedPraise || state.rewriteText || selectedPreview;
+    const timesToSchedule = getStateScheduleTimes(state);
+    const permission = await platformAdapters.notifications.requestPermission();
+    let notificationStatus: AppState["notificationStatus"] = permission === "unsupported" ? "unsupported" : permission === "denied" ? "denied" : "prompt";
+    let notificationMessage = permission === "unsupported"
+      ? i18n.t("notification.unsupported")
+      : permission === "denied"
+        ? i18n.t("notification.denied")
+        : i18n.t("notification.prompt");
+    if (permission === "granted") {
+      let scheduledCount = 0;
+      let blockedByUnsupported = false;
+      for (const [index, time] of timesToSchedule.entries()) {
+        const result = await platformAdapters.notifications.scheduleReminder({
+          id: `message-${now}-${index}`,
+          title: i18n.t("app.title"),
+          body: finalText,
+          scheduledAt: getNextScheduledAt(time),
+        });
+        if (result.status === "scheduled") {
+          scheduledCount += 1;
+        } else {
+          blockedByUnsupported = result.reason === "unsupported";
+        }
+      }
+      if (scheduledCount > 0) {
+        notificationStatus = "scheduled";
+        notificationMessage = scheduledCount === 1
+          ? i18n.t("notification.scheduled")
+          : i18n.t("notification.scheduledMany", { count: scheduledCount });
+      } else {
+        notificationStatus = "blocked";
+        notificationMessage = blockedByUnsupported ? i18n.t("notification.unsupported") : i18n.t("notification.denied");
+      }
+    }
+    const newWeeklyCare = getWeekCareArray(state.weeklyCare);
+    setState((current) => ({
+      ...current,
+      previewText: finalText,
+      savedAt: now,
+      step: 4,
+      sessionPhase: "initial",
+      weeklyCare: newWeeklyCare,
+      scheduleTime: timesToSchedule[0] ?? defaultScheduleTime,
+      scheduleTimes: timesToSchedule,
+      notificationStatus,
+      notificationMessage,
+      generationContext: "",
+      generatedCandidates: [],
+      selectedCandidateId: null,
+      reportedCandidateIds: [],
+    }));
+    announce("reminder_created", { source: state.sourceTag, timeCount: timesToSchedule.length, times: timesToSchedule.join("|"), status: notificationStatus });
+    announce("preview_viewed", { source: state.sourceTag, sourceTag: state.sourceTag });
+  };
+
   const visiblePraiseOptions = revealed
     ? allPraiseOptions
     : allPraiseOptions.filter((item) => initialPraiseIds.includes(item.id));
@@ -228,30 +514,30 @@ export default function App() {
     return i18n.t("result.summaryEdit");
   })();
 
-	  const hasActiveSession = state.savedAt !== null;
-	  const showAppFlow = state.navTab === "home";
-	  const showHome = showAppFlow && hasActiveSession && state.sessionPhase === "initial" && state.step === 4;
-	  const weekCare = state.weeklyCare.length === 7 ? state.weeklyCare : [0,0,0,0,0,0,0];
-	  const weekCareCount = countWeekCare(weekCare);
+  const hasActiveSession = state.savedAt !== null;
+  const showAppFlow = state.navTab === "home";
+  const showHome = showAppFlow && hasActiveSession && state.sessionPhase === "initial" && state.step === 4;
+  const weekCare = state.weeklyCare.length === 7 ? state.weeklyCare : [0,0,0,0,0,0,0];
+  const weekCareCount = countWeekCare(weekCare);
 
   return (
     <main className="app-shell" aria-label={i18n.t("app.aria")}>
       <div className="app-home">
         {/* ────── Progress rail ────── */}
-	        {showAppFlow && !showHome && (
-        <nav className="progress-rail" aria-label={i18n.t("navigation.preview")}>
-          {progressLabels.map((labelKey, index) => {
-            const dotStep = (index + 1) as Step;
-            const isActive = state.step === dotStep;
-            const isPast = state.step > dotStep;
-            return (
-              <div key={labelKey} className={`progress-rail-dot${isActive ? " active" : ""}${isPast ? " past" : ""}`}>
-                <span className="dot" />
-                <span className="progress-rail-label">{i18n.t(labelKey)}</span>
-              </div>
-            );
-          })}
-        </nav>
+        {showAppFlow && !showHome && (
+          <nav className="progress-rail" aria-label={i18n.t("navigation.preview")}>
+            {progressLabels.map((labelKey, index) => {
+              const dotStep = (index + 1) as Step;
+              const isActive = state.step === dotStep;
+              const isPast = state.step > dotStep;
+              return (
+                <div key={labelKey} className={`progress-rail-dot${isActive ? " active" : ""}${isPast ? " past" : ""}`}>
+                  <span className="dot" />
+                  <span className="progress-rail-label">{i18n.t(labelKey)}</span>
+                </div>
+              );
+            })}
+          </nav>
         )}
 
         {/* ═══════════ HOME DASHBOARD ═══════════ */}
@@ -273,7 +559,12 @@ export default function App() {
             <div className="hero-panel">
               <span className="hero-label">{i18n.t("home.heroLabel")}</span>
               <p className="hero-quote">{selectedPreview}</p>
-              <p className="hero-sub">{i18n.t("home.heroLine", { time: state.scheduleTime })}</p>
+              <p className="hero-sub">{i18n.t("home.heroLine", { time: scheduleSummary })}</p>
+              {state.notificationMessage && (
+                <p className={`hero-notice ${state.notificationStatus === "scheduled" ? "safe" : "caution"}`}>
+                  {state.notificationMessage}
+                </p>
+              )}
               <button
                 type="button"
                 className="hero-pill"
@@ -380,66 +671,101 @@ export default function App() {
           </section>
         )}
 
-        {/* ═══════════ SCREEN 2: Emotion + Praise Pick ═══════════ */}
+        {/* ═══════════ SCREEN 2: AI Candidate Generation ═══════════ */}
 	        {showAppFlow && state.step === 2 && (
           <section className="screen-section">
-            <h2 className="screen-title">{i18n.t("praise.title")}</h2>
-
-            {/* Emotion chips row */}
-            <div style={{ marginBottom: 8 }}>
-              <p className="screen-body">{i18n.t("emotion.title")}</p>
-              <div className="emotion-chip-row" style={{ marginTop: 12 }}>
-                {emotionChips.map((chip) => (
-                  <button
-                    key={chip.id}
-                    type="button"
-                    className={`emotion-chip ${chip.color}${state.selectedEmotion === chip.id ? " selected" : ""}`}
-                    onClick={() => setState((current) => ({ ...current, selectedEmotion: chip.id }))}
-                  >
-                    <span className="chip-icon" aria-hidden="true">{chip.icon}</span>
-                    <span className="chip-title">{i18n.t(chip.i18nKey)}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <p className="screen-body">{i18n.t("praise.body")}</p>
+            <h2 className="screen-title">{i18n.t("ai.title")}</h2>
+            <p className="screen-body">{i18n.t("ai.body")}</p>
 
             <div className="button-stack">
-              {visiblePraiseOptions.map((option, idx) => {
-                const colorVariants = ["coral", "blue", "violet", "green", "amber"] as const;
-                const colorClass = colorVariants[idx % colorVariants.length];
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`pm-choice-card ${colorClass}`}
-                    aria-pressed={state.selectedPraiseId === option.id}
-                    onClick={() => selectPraise(option.id)}
-                  >
-                    <span className="choice-card-icon" aria-hidden="true">{choiceIcons[option.id] ?? "💛"}</span>
-                    <span className="choice-card-body">
-                      <span className="choice-card-title">{locale === "ko" ? option.ko : option.en}</span>
-                    </span>
-                    <span className="choice-card-check" aria-hidden="true">{state.selectedPraiseId === option.id ? "✓" : ""}</span>
-                  </button>
-                );
-              })}
+              {(["praise", "nag"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={`pm-choice-card ${mode === "praise" ? "violet" : "coral"}`}
+                  aria-label={i18n.t(`mode.${mode}`)}
+                  aria-pressed={state.messageMode === mode}
+                  onClick={() => setState((current) => ({ ...current, messageMode: mode, generatedCandidates: [], selectedCandidateId: null, generationStatus: "idle" }))}
+                >
+                  <span className="choice-card-icon" aria-hidden="true">{mode === "praise" ? "💜" : "⚡"}</span>
+                  <span className="choice-card-body">
+                    <span className="choice-card-title">{i18n.t(`mode.${mode}`)}</span>
+                    <span className="choice-card-sub">{i18n.t(`mode.${mode}Sub`)}</span>
+                  </span>
+                  <span className="choice-card-check" aria-hidden="true">{state.messageMode === mode ? "✓" : ""}</span>
+                </button>
+              ))}
             </div>
 
-            {!revealed && (
-              <button type="button" className="pm-text-action" onClick={() => setRevealed(true)}>
-                {i18n.t("praise.reveal")}
-              </button>
+            <div className="textarea-card">
+              <textarea
+                aria-label={i18n.t("ai.inputLabel")}
+                value={state.generationContext}
+                onChange={(event) => setState((current) => ({ ...current, generationContext: event.target.value.slice(0, 120) }))}
+                placeholder={state.messageMode === "praise" ? i18n.t("ai.praisePlaceholder") : i18n.t("ai.nagPlaceholder")}
+              />
+              <span className="textarea-helper">{i18n.t("ai.inputHelper", { count: state.generationContext.length })}</span>
+            </div>
+
+            <div className="settings-card">
+              <span className="preview-badge">{i18n.t("ai.disclosureBadge")}</span>
+              <p className="settings-note">{i18n.t("ai.disclosure")}</p>
+            </div>
+
+            {state.generationStatus === "blocked" && (
+              <p className="safety-message blocked">{i18n.t("ai.blocked")}</p>
             )}
 
             <button
               type="button"
               className="pm-primary-cta"
-              disabled={!state.selectedPraiseId}
+              disabled={state.generationStatus === "loading"}
+              onClick={generateCandidates}
+            >
+              {state.generationStatus === "loading" ? i18n.t("ai.generating") : i18n.t("ai.generate")}
+            </button>
+
+            {state.generatedCandidates.length > 0 && (
+              <div className="button-stack">
+                {state.generatedCandidates.map((candidate) => (
+                  <div key={candidate.id} className={`candidate-card ${candidate.style}`}>
+                    <span className="preview-badge">
+                      {candidate.source === "ai" ? i18n.t("ai.candidateLabel") : i18n.t("ai.fallbackLabel")}
+                    </span>
+                    <span className="candidate-style">{i18n.t(candidateStyleKeys[candidate.style] ?? "candidate.style.warm")}</span>
+                    <button
+                      type="button"
+                      className="candidate-select"
+                      aria-pressed={state.selectedCandidateId === candidate.id}
+                      onClick={() => selectCandidate(candidate)}
+                    >
+                      {candidate.text}
+                    </button>
+                    <button
+                      type="button"
+                      className="pm-text-action"
+                      onClick={() => {
+                        setState((current) => ({ ...current, reportedCandidateIds: [...new Set([...current.reportedCandidateIds, candidate.id])] }));
+                        announce("ai_candidate_reported", { source: state.sourceTag, choice: candidate.mode, variant: candidate.style });
+                      }}
+                    >
+                      {i18n.t("ai.report")}
+                    </button>
+                    {state.reportedCandidateIds.includes(candidate.id) && (
+                      <p className="settings-note">{i18n.t("ai.reported")}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="pm-primary-cta"
+              disabled={!state.selectedCandidateId}
               onClick={() => { setState((current) => ({ ...current, step: 3 })); }}
             >
-              {i18n.t("praise.continue")}
+              {i18n.t("ai.continue")}
             </button>
           </section>
         )}
@@ -506,41 +832,161 @@ export default function App() {
             <h2 className="screen-title">{i18n.t("schedule.title")}</h2>
             <p className="screen-body">{i18n.t("schedule.body")}</p>
 
-            <div className="time-card">
-              <span style={{ color: "var(--pm-text-muted)", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" }}>
-                {i18n.t("schedule.label")}
-              </span>
-              <input
-                aria-label={i18n.t("schedule.label")}
-                type="time"
-                value={state.scheduleTime}
-                onChange={(event) => setState((current) => ({ ...current, scheduleTime: event.target.value }))}
-              />
+            <div className="time-picker-card">
+              <div className="time-picker-header">
+                <span>{i18n.t("schedule.label")}</span>
+                <button
+                  type="button"
+                  className="pm-text-action time-add-button"
+                  onClick={() => openTimePicker(null)}
+                >
+                  {i18n.t("schedule.addTime")}
+                </button>
+              </div>
+
+              <div className="time-list" aria-label={i18n.t("schedule.savedTimes")}>
+                {scheduleTimes.map((time, index) => (
+                  <div key={`${time}-${index}`} className="time-row">
+                    <button
+                      type="button"
+                      className="time-row-main"
+                      aria-label={i18n.t("schedule.editTimeLabel", { time: formatTimeLabel(time, locale) })}
+                      onClick={() => openTimePicker(index)}
+                    >
+                      <span>{i18n.t("schedule.timeItem", { index: index + 1 })}</span>
+                      <strong>{formatTimeLabel(time, locale)}</strong>
+                    </button>
+                    {scheduleTimes.length > 1 && (
+                      <button
+                        type="button"
+                        className="pm-text-action time-remove-button"
+                        aria-label={i18n.t("schedule.removeTimeLabel", { time: formatTimeLabel(time, locale) })}
+                        onClick={() => removeScheduleTime(index)}
+                      >
+                        {i18n.t("schedule.removeTime")}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {timePickerState.open && (
+              <div className="time-sheet-backdrop">
+                <section
+                  className="time-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={i18n.t(timePickerState.mode === "add" ? "schedule.addDialogTitle" : "schedule.editDialogTitle")}
+                >
+                  <div className="time-sheet-header">
+                    <h3>{i18n.t(timePickerState.mode === "add" ? "schedule.addDialogTitle" : "schedule.editDialogTitle")}</h3>
+                    <button type="button" className="pm-text-action" onClick={closeTimePicker}>
+                      {i18n.t("schedule.cancelPicker")}
+                    </button>
+                  </div>
+                  <p className="time-sheet-hint">{i18n.t("schedule.pickerHint")}</p>
+
+                  <div className="quick-time-grid">
+                    {quickTimeOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        className={`pm-secondary-cta quick-time-chip${timePickerState.draftTime === option.time ? " is-selected" : ""}`}
+                        aria-pressed={timePickerState.draftTime === option.time}
+                        onClick={() => setTimePickerState((current) => ({ ...current, draftTime: option.time }))}
+                      >
+                        {i18n.t(option.labelKey)}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="time-adjuster">
+                    <p className="time-preview">{formatTimeLabel(timePickerState.draftTime, locale)}</p>
+                    <div className="ampm-toggle" aria-label={i18n.t("schedule.ampmLabel")}>
+                      {(["am", "pm"] as const).map((period) => {
+                        const isSelected = (parseTimeParts(timePickerState.draftTime).hour < 12 ? "am" : "pm") === period;
+                        return (
+                          <button
+                            key={period}
+                            type="button"
+                            className="pm-text-action"
+                            aria-pressed={isSelected}
+                            onClick={() => setTimePickerState((current) => ({ ...current, draftTime: setTimePeriod(current.draftTime, period) }))}
+                          >
+                            {i18n.t(`schedule.ampm.${period}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="time-adjuster-grid">
+                      <div className="time-adjust-column">
+                        <button
+                          type="button"
+                          className="pm-secondary-cta time-adjust-button"
+                          aria-label={i18n.t("schedule.hourUp")}
+                          onClick={() => setTimePickerState((current) => ({ ...current, draftTime: addMinutesToTime(current.draftTime, 60) }))}
+                        >
+                          +
+                        </button>
+                        <span>{i18n.t("schedule.hourUnit")}</span>
+                        <button
+                          type="button"
+                          className="pm-secondary-cta time-adjust-button"
+                          aria-label={i18n.t("schedule.hourDown")}
+                          onClick={() => setTimePickerState((current) => ({ ...current, draftTime: addMinutesToTime(current.draftTime, -60) }))}
+                        >
+                          -
+                        </button>
+                      </div>
+                      <div className="time-adjust-column">
+                        <button
+                          type="button"
+                          className="pm-secondary-cta time-adjust-button"
+                          aria-label={i18n.t("schedule.minuteUp")}
+                          onClick={() => setTimePickerState((current) => ({ ...current, draftTime: addMinutesToTime(current.draftTime, 5) }))}
+                        >
+                          +
+                        </button>
+                        <span>{i18n.t("schedule.minuteUnit")}</span>
+                        <button
+                          type="button"
+                          className="pm-secondary-cta time-adjust-button"
+                          aria-label={i18n.t("schedule.minuteDown")}
+                          onClick={() => setTimePickerState((current) => ({ ...current, draftTime: addMinutesToTime(current.draftTime, -5) }))}
+                        >
+                          -
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="sheet-actions">
+                    <button type="button" className="pm-secondary-cta" onClick={closeTimePicker}>
+                      {i18n.t("schedule.cancelPicker")}
+                    </button>
+                    <button type="button" className="pm-primary-cta" onClick={commitTimePicker}>
+                      {i18n.t(timePickerState.mode === "add" ? "schedule.confirmAddTime" : "schedule.confirmEditTime")}
+                    </button>
+                  </div>
+                </section>
+              </div>
+            )}
 
             <button
               type="button"
               className="pm-primary-cta"
-              onClick={() => {
-                announce("schedule_started", { source: state.sourceTag, sourceTag: state.sourceTag });
-                const now = Date.now();
-                const newWeeklyCare = getWeekCareArray(state.weeklyCare);
-                setState((current) => ({
-                  ...current,
-                  previewText: current.selectedPraise || current.rewriteText || selectedPreview,
-                  savedAt: now,
-                  step: 4,
-                  sessionPhase: "initial",
-                  weeklyCare: newWeeklyCare,
-                }));
-                announce("reminder_created", { source: state.sourceTag, time: state.scheduleTime });
-                announce("preview_viewed", { source: state.sourceTag, sourceTag: state.sourceTag });
-              }}
+              onClick={() => { void scheduleSelectedMessage(); }}
             >
               {i18n.t("schedule.savePreview")}
             </button>
 
             <div className="preview-card">
+              {state.notificationMessage && (
+                <p className={`safety-message ${state.notificationStatus === "scheduled" ? "safe" : "caution"}`}>
+                  {state.notificationMessage}
+                </p>
+              )}
               {state.previewText ? (
                 <>
                   <span className="preview-badge">{i18n.t("schedule.previewBadge")}</span>
@@ -567,7 +1013,7 @@ export default function App() {
               </span>
               <p className="quote-text">{state.selectedPraise}</p>
               <p style={{ margin: "8px 0 0", fontSize: 13, color: "var(--pm-text-muted)", fontWeight: 400 }}>
-                {i18n.t("checkin.yesterdaySaved", { time: state.scheduleTime })}
+                {i18n.t("checkin.yesterdaySaved", { time: scheduleSummary })}
               </p>
             </div>
 
@@ -733,7 +1179,7 @@ export default function App() {
         )}
 
         {/* ═══════════ Language switcher compact (Screens 2-6) ═══════════ */}
-	        {showAppFlow && state.step >= 2 && !showHome && (
+        {showAppFlow && state.step >= 2 && !showHome && (
           <div style={{ position: "relative", width: "100%", maxWidth: 430, margin: "0 auto" }}>
             <button
               type="button"
@@ -746,21 +1192,21 @@ export default function App() {
           </div>
         )}
 
-	        {showAppFlow && (
-	        <footer style={{ textAlign: "center", padding: "24px 0 8px", fontSize: 12, color: "var(--pm-text-soft)", fontWeight: 500 }}>
-	          <p style={{ margin: 0 }}>{i18n.t("schedule.previewOnly")}</p>
-	        </footer>
-	        )}
-	      </div>
+        {showAppFlow && (
+          <footer style={{ textAlign: "center", padding: "24px 0 8px", fontSize: 12, color: "var(--pm-text-soft)", fontWeight: 500 }}>
+            <p style={{ margin: 0 }}>{i18n.t("schedule.previewOnly")}</p>
+          </footer>
+        )}
+      </div>
 
-	      {/* ────── Bottom Navigation (shown on home and vault) ────── */}
-	      {(showHome || state.navTab === "vault" || state.navTab === "settings") && (
-	        <nav className="bottom-nav" aria-label="Main navigation">
-	          <button
-	            type="button"
-	            className={`nav-item${state.navTab === "home" ? " active" : ""}`}
-	            onClick={() => setState((current) => ({ ...current, navTab: "home" }))}
-	          >
+      {/* ────── Bottom Navigation (shown on home and tabs) ────── */}
+      {(showHome || state.navTab === "vault" || state.navTab === "settings") && (
+        <nav className="bottom-nav" aria-label="Main navigation">
+          <button
+            type="button"
+            className={`nav-item${state.navTab === "home" ? " active" : ""}`}
+            onClick={() => setState((current) => ({ ...current, navTab: "home" }))}
+          >
             <span className="nav-icon">🏠</span>
             {i18n.t("nav.home")}
           </button>
@@ -772,20 +1218,20 @@ export default function App() {
             <span className="nav-icon">📦</span>
             {i18n.t("nav.vault")}
           </button>
-	          <button
-	            type="button"
-	            className={`nav-item${state.navTab === "settings" ? " active" : ""}`}
-	            onClick={() => setState((current) => ({ ...current, navTab: "settings" }))}
-	          >
-	            <span className="nav-icon">⚙️</span>
-	            {i18n.t("nav.settings")}
+          <button
+            type="button"
+            className={`nav-item${state.navTab === "settings" ? " active" : ""}`}
+            onClick={() => setState((current) => ({ ...current, navTab: "settings" }))}
+          >
+            <span className="nav-icon">⚙️</span>
+            {i18n.t("nav.settings")}
           </button>
         </nav>
       )}
 
-	      {/* ────── Vault view ────── */}
-	      {state.navTab === "vault" && !showHome && (
-	        <section className="screen-section" style={{ paddingTop: 20 }}>
+      {/* ────── Vault view ────── */}
+      {state.navTab === "vault" && !showHome && (
+        <section className="screen-section" style={{ paddingTop: 20 }}>
           <div className="home-header">
             <h2 className="home-headline">{i18n.t("vault.title")}</h2>
             {state.vaultItems.length > 0 && (
@@ -844,51 +1290,51 @@ export default function App() {
               ))}
             </div>
           )}
-	        </section>
-	      )}
+        </section>
+      )}
 
-	      {/* ────── Settings view ────── */}
-	      {state.navTab === "settings" && !showHome && (
-	        <section className="screen-section" style={{ paddingTop: 20 }}>
-	          <div className="home-header">
-	            <h2 className="home-headline">{i18n.t("settings.title")}</h2>
-	            <p className="home-support">{i18n.t("settings.languageBody")}</p>
-	          </div>
+      {/* ────── Settings view ────── */}
+      {state.navTab === "settings" && !showHome && (
+        <section className="screen-section" style={{ paddingTop: 20 }}>
+          <div className="home-header">
+            <h2 className="home-headline">{i18n.t("settings.title")}</h2>
+            <p className="home-support">{i18n.t("settings.languageBody")}</p>
+          </div>
 
-	          <div className="settings-card">
-	            <span className="preview-badge">{i18n.t("schedule.previewOnly")}</span>
-	            <div>
-	              <h3>{i18n.t("settings.notificationTitle")}</h3>
-	              <p>{i18n.t("settings.notificationStatus")}</p>
-	            </div>
-	            <p className="settings-note">{i18n.t("settings.notificationBody")}</p>
-	            <div className="settings-row">
-	              <span>{i18n.t("settings.savedTime")}</span>
-	              <strong>{state.scheduleTime}</strong>
-	            </div>
-	          </div>
+          <div className="settings-card">
+            <span className="preview-badge">{i18n.t("schedule.previewOnly")}</span>
+            <div>
+              <h3>{i18n.t("settings.notificationTitle")}</h3>
+              <p>{i18n.t("settings.notificationStatus")}</p>
+            </div>
+            <p className="settings-note">{i18n.t("settings.notificationBody")}</p>
+            <div className="settings-row">
+              <span>{i18n.t("settings.savedTime")}</span>
+              <strong>{scheduleSummary}</strong>
+            </div>
+          </div>
 
-	          <div className="settings-card">
-	            <div>
-	              <h3>{i18n.t("settings.language")}</h3>
-	              <p>{i18n.t("settings.languageBody")}</p>
-	            </div>
-	            <div className="language-switcher" aria-label={i18n.t("settings.language")}>
-	              {localeOptions.map((option) => (
-	                <button
-	                  key={option.id}
-	                  type="button"
-	                  className={`lang-option${locale === option.id ? " is-selected" : ""}`}
-	                  aria-pressed={locale === option.id}
-	                  onClick={() => setLocale(option.id)}
-	                >
-	                  {option.label}
-	                </button>
-	              ))}
-	            </div>
-	          </div>
-	        </section>
-	      )}
-	    </main>
-	  );
-	}
+          <div className="settings-card">
+            <div>
+              <h3>{i18n.t("settings.language")}</h3>
+              <p>{i18n.t("settings.languageBody")}</p>
+            </div>
+            <div className="language-switcher" aria-label={i18n.t("settings.language")}>
+              {localeOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`lang-option${locale === option.id ? " is-selected" : ""}`}
+                  aria-pressed={locale === option.id}
+                  onClick={() => setLocale(option.id)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </main>
+  );
+}

@@ -1,10 +1,10 @@
 ---
-version: 0.5
-status: planned-v0.4
-updated: 2026-06-19
+version: 0.6.1
+status: implemented-v0.5
+updated: 2026-06-26
 canonical: true
-project: 칭찬해줘
-topic: 6-screen praise/check-in migration plan
+project: 내편한마디
+topic: AI candidate + notification implementation plan
 ---
 
 # 칭찬해줘 알림형 MVP 구현 계획
@@ -16,6 +16,17 @@ topic: 6-screen praise/check-in migration plan
 `칭찬해줘`를 기존 reminder/voice MVP에서 승인된 6-screen praise/check-in flow로 전환한다. 1차 목표는 local-first, i18n, trust-safe analytics, 최소 platform boundary를 갖춘 구조로 바꾸는 것이며, 알림/광고/결제/로그인은 승인된 시점까지 구현하지 않는다.
 
 ## Implementation Result
+
+2026-06-26 Codex 구현 기준으로 v0.5 AI candidate + browser notification 범위가 완료됐다.
+
+- Active app title/copy: `내편한마디` / `A Word for Me`.
+- Screen 2 is now `칭찬해줘 / 잔소리해줘`: situation input -> AI candidate generation -> label/report/select.
+- `MessageGenerationAdapter` calls `/api/generate-candidates`; if unavailable, it returns safe local fallback candidates.
+- `/api/generate-candidates` is a server-only DeepSeek proxy path using `DEEPSEEK_API_KEY`, `deepseek-v4-flash`, JSON output, and no client-exposed key.
+- `NotificationAdapter` now uses the browser Notification API when available and permission is granted; unsupported/denied environments fall back to app preview with clear notice.
+- Screen 4 now stores `scheduleTimes[]`, lets the user add/edit/remove multiple notification times, and schedules one browser notification attempt per saved time.
+- Generation context and candidate drafts are sanitized out of localStorage; final selected/edited user line remains stored as app state.
+- Apps in Toss Smart Message remains a separate server/mTLS/template-review path and is not implemented client-side.
 
 2026-06-16 Codex 구현 기준으로 v0.1 + v0.2 범위가 완료됐다.
 
@@ -39,8 +50,8 @@ Do now:
 Do not now:
 
 - Real Toss/Google login, ads, IAP, or payment.
-- Real notification delivery or backend scheduling.
-- AI generation or moderation.
+- Toss Smart Message delivery, mTLS server implementation, or backend scheduling.
+- Client-side AI provider calls or unlabelled AI output.
 - Platform-specific SDK imports in product/domain code.
 
 ### Files
@@ -129,7 +140,7 @@ Tests:
 
 Implementation notes:
 
-- AI/API는 쓰지 않는다.
+- 직접 쓰기 safety check는 로컬 rule을 우선한다. AI 후보도 같은 blocked/caution 원칙을 통과해야 한다.
 - 사용자를 혼내는 copy가 아니라 “이 문구가 나를 너무 몰아붙일 수 있어요” 톤으로 간다.
 - 앱이 상담/치료처럼 보이지 않게 긴급/의학적 표현은 최소화한다.
 
@@ -150,7 +161,7 @@ Implementation notes:
 
 현재 `src/App.tsx`가 UI, 상태, 오디오, localStorage, 플랫폼 표시를 모두 담당한다. v0.1 구현의 첫 목표는 `domain/reminders`, `features/reminder`, `platform adapters`로 책임을 나누고, 제품 로직이 Apps in Toss/Google Play/브라우저 Notification SDK에 직접 의존하지 않게 만드는 것이다.
 
-v0.1은 실제 안정 알림을 보장하지 않는다. 사용자가 메시지와 시간을 저장하고 미리 볼 수 있게 하며, `NotificationAdapter`는 `preview_only` 결과를 반환하는 stub으로 둔다. v0.2는 그 위에 상세 화면, 반응 데이터, 스누즈/건너뛰기, 권한 UX 또는 capability-aware adapter를 붙인다.
+v0.5는 브라우저 Notification API가 있고 권한이 허용된 환경에서 실제 알림 예약을 시도한다. 다만 웹 브라우저만으로 모바일 백그라운드 알림을 안정 보장하지 않으므로, 실패/거부/미지원 상태에서는 앱 안 preview fallback을 유지한다. Apps in Toss Smart Message와 Android/Google Play 수준의 안정 알림은 별도 플랫폼/서버 어댑터에서 완성한다.
 
 ## Tech Stack
 
@@ -683,6 +694,8 @@ npm run dev -- --port 5174
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| 0.6.1 | 2026-06-26 | Added multi-time notification scheduling. `AppState` now keeps `scheduleTimes[]` with legacy `scheduleTime` migration; schedule screen uses a custom add/edit sheet and schedules every saved time. |
+| 0.6 | 2026-06-26 | AI candidate mode, DeepSeek server proxy boundary, AI labels/reporting, browser Notification API scheduling attempt, privacy-safe state persistence, and updated tests/build/browser QA completed. |
 | 0.5 | 2026-06-19 | 6-screen Architecture A/B alignment, trust-safe analytics boundary, and minimal platform boundary updated. |
 | 0.3 | 2026-06-16 | v0.1/v0.2 구현 완료 상태 반영. storage adapter 경계, private 마스킹, locale template 저장, snooze/skip preview 반영 검증 완료. |
 | 0.2 | 2026-06-16 | 알림형 MVP v0.1 + v0.2 연속 구현 계획, subagent 분업, adapter 경계, version gates 반영. |

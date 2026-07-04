@@ -647,6 +647,18 @@ button:disabled {
   line-height: 1.35;
 }
 
+.hero-panel .hero-notice {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.35;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+}
+
 .hero-panel .hero-pill {
   display: inline-flex;
   align-items: center;
@@ -801,6 +813,62 @@ button:disabled {
   background: var(--pm-danger-bg);
 }
 
+.safety-message.safe {
+  color: #24644f;
+  background: var(--pm-success-bg);
+}
+
+/* ─────────────── AI candidate card ─────────────── */
+.candidate-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-card);
+  box-shadow: var(--pm-shadow-card);
+}
+
+.candidate-card.warm { border-color: rgba(113, 97, 232, 0.26); }
+.candidate-card.short { border-color: rgba(80, 150, 128, 0.28); }
+.candidate-card.practical { border-color: rgba(180, 141, 35, 0.28); }
+.candidate-card.calm { border-color: rgba(100, 130, 190, 0.28); }
+.candidate-card.direct { border-color: rgba(190, 96, 72, 0.26); }
+
+.candidate-card .preview-badge {
+  justify-self: start;
+  padding: 6px 12px;
+  color: var(--pm-primary);
+  font-size: 12px;
+  font-weight: 800;
+  background: var(--pm-primary-soft);
+  border-radius: var(--pm-radius-pill);
+}
+
+.candidate-style {
+  color: var(--pm-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.candidate-select {
+  width: 100%;
+  padding: 0;
+  color: var(--pm-text-strong);
+  font-size: clamp(19px, 5vw, 23px);
+  font-weight: 750;
+  line-height: 1.45;
+  text-align: left;
+  word-break: keep-all;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+}
+
+.candidate-select[aria-pressed="true"] {
+  color: var(--pm-primary);
+}
+
 /* ─────────────── Preview card ─────────────── */
 .preview-card {
   min-height: 180px;
@@ -848,27 +916,247 @@ button:disabled {
   word-break: keep-all;
 }
 
-/* ─────────────── Time card ─────────────── */
-.time-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+/* ─────────────── Time picker ─────────────── */
+.time-picker-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
   background: var(--pm-surface);
   border: 1px solid var(--pm-border);
   border-radius: var(--pm-radius-card);
+  box-shadow: var(--pm-shadow-card);
 }
 
-.time-card input[type="time"] {
-  flex: 1;
-  min-height: 44px;
-  padding: 6px 12px;
-  color: var(--pm-text-strong);
-  font-size: 18px;
-  font-weight: 700;
+.time-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.time-picker-header > span {
+  color: var(--pm-text-muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.time-add-button {
+  color: var(--pm-primary);
+  background: var(--pm-primary-soft-2);
+}
+
+.time-list {
+  display: grid;
+  gap: 10px;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.time-row-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  min-width: 0;
+  padding: 12px 14px;
+  text-align: left;
   background: var(--pm-surface-soft);
   border: 1.5px solid var(--pm-border);
   border-radius: var(--pm-radius-control);
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.time-row-main:hover {
+  border-color: var(--pm-primary);
+  background: var(--pm-primary-soft-2);
+  transform: translateY(-1px);
+}
+
+.time-row-main span {
+  color: var(--pm-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.time-row-main strong {
+  color: var(--pm-text-strong);
+  font-size: clamp(20px, 5.6vw, 24px);
+  font-weight: 850;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.time-remove-button {
+  align-self: center;
+  color: var(--pm-danger-text);
+}
+
+.time-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px max(16px, env(safe-area-inset-left)) calc(20px + var(--pm-safe-bottom)) max(16px, env(safe-area-inset-right));
+  background: rgba(41, 38, 50, 0.28);
+  backdrop-filter: blur(10px);
+}
+
+.time-sheet {
+  width: min(100%, 430px);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  background: var(--pm-surface);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px 24px 18px 18px;
+  box-shadow: 0 22px 70px rgba(39, 31, 62, 0.24);
+}
+
+.time-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.time-sheet-header h3 {
+  margin: 0;
+  color: var(--pm-text-strong);
+  font-size: 20px;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.time-sheet-hint {
+  margin: -4px 0 0;
+  color: var(--pm-text-muted);
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.quick-time-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.quick-time-chip {
+  min-height: 48px;
+  padding: 10px 12px;
+  color: var(--pm-text-strong);
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.25;
+  word-break: keep-all;
+  background: var(--pm-surface-soft);
+  border: 1.5px solid var(--pm-border);
+  border-radius: var(--pm-radius-control);
+}
+
+.quick-time-chip.is-selected {
+  color: var(--pm-primary);
+  background: var(--pm-primary-soft-2);
+  border-color: rgba(113, 97, 232, 0.38);
+}
+
+.time-adjuster {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  background: var(--pm-surface-soft);
+  border-radius: var(--pm-radius-card);
+}
+
+.time-preview {
+  margin: 0;
+  color: var(--pm-text-strong);
+  font-size: clamp(32px, 11vw, 42px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ampm-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px;
+  background: #FFFFFF;
+  border: 1px solid var(--pm-border);
+  border-radius: var(--pm-radius-pill);
+}
+
+.ampm-toggle button {
+  min-height: 40px;
+  color: var(--pm-text-muted);
+  font-size: 14px;
+  font-weight: 800;
+  background: transparent;
+  border: 0;
+  border-radius: var(--pm-radius-pill);
+}
+
+.ampm-toggle button[aria-pressed="true"] {
+  color: #FFFFFF;
+  background: var(--pm-primary);
+  box-shadow: var(--pm-shadow-cta);
+}
+
+.time-adjuster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.time-adjust-column {
+  display: grid;
+  grid-template-rows: 48px 28px 48px;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+}
+
+.time-adjust-column span {
+  color: var(--pm-text-muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.time-adjust-button {
+  min-height: 48px;
+  color: var(--pm-text-strong);
+  font-size: 24px;
+  font-weight: 800;
+  background: #FFFFFF;
+  border: 1.5px solid var(--pm-border);
+  border-radius: var(--pm-radius-control);
+}
+
+.sheet-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 10px;
+}
+
+.sheet-actions .pm-secondary-cta,
+.sheet-actions .pm-primary-cta {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  font-size: 15px;
 }
 
 /* ─────────────── Result / Fake-door ─────────────── */

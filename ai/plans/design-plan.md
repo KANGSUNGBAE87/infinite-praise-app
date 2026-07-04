@@ -1,9 +1,9 @@
 ---
-version: 0.2.0
-status: visual-ui-a2-candidate
-updated: 2026-06-20 KST
+version: 0.3.1
+status: implemented-v0.5-candidate
+updated: 2026-06-26 KST
 canonical: true
-project: 칭찬해줘
+project: 내편한마디
 source_stage: stages/12_UI_DESIGN.md
 source_task: t_9460a4d8
 parent_review: stages/reviews/ui-layout-design-review.md (t_02ca9722)
@@ -15,6 +15,14 @@ visual_restart_decision: D-20260620-016
 # 칭찬해줘 Canonical Design Plan
 
 ## Current status
+
+v0.5 AI candidate + notification candidate implementation is live in the React app. The current active UX differs from the A2 `3 praise cards + reveal` direction:
+
+- Screen 1 brand is `내편한마디` / `A Word for Me`.
+- Screen 2 uses two mode cards (`칭찬해줘`, `잔소리해줘`), a situation textarea, AI usage notice, generated candidate cards, AI labels, and report actions.
+- Candidate cards use the existing soft pastel/card DNA but allow up to five generated cards below the fold.
+- Home shows browser/platform notification status after save.
+- Bottom navigation now opens actual Home/Vault/Settings views.
 
 Visual/UI Design A2 candidate — B1 layout challenge 7건을 전면 수용한 최종안. CEO visual decision 직전.
 
@@ -147,10 +155,12 @@ P0: selected sentence preview + calm one-line edit.
 
 ### Screen 4 — Time Save + Preview (A2: CLS reserve)
 
-P0: save one time and immediately see first-value preview.
+P0: save one or more notification times and immediately see first-value preview.
 
-- Time selection uses rounded control/chips.
-- Primary (`pm-primary-cta`): `저장하고 미리보기`.
+- Time selection uses a saved-time list plus an add/edit sheet instead of a raw native time input.
+- The add/edit sheet combines quick common times with AM/PM and 5-minute step controls.
+- Reference pattern: iOS compact date/time picker opens a modal from a button when inline display is difficult; Android/Material time pickers use dialog-based dial/input selection with explicit selected state.
+- Primary (`pm-primary-cta`): `알림 예약하고 미리보기`.
 - Preview card container에 `min-height: 180px` reserve → CLS 방지.
 - Preview card: badge + large sentence + preview-only note.
 - No permission prompt, ads, payment, or audio promise.
@@ -221,7 +231,7 @@ P0: check-in result summary.
 
 ## Excluded scope
 
-This plan does not approve product scope changes, voice/TTS/audio, AI counseling, login, ads, IAP, payment, backend, release/store submission, or product code implementation.
+This plan does not approve voice/TTS/audio, AI counseling/diagnosis/treatment, login, ads, IAP, payment, release/store submission, or platform SDK implementation. v0.5 does approve AI copy candidate generation only through a server proxy with visible AI labels and reporting.
 
 ## Unresolved assumptions
 
@@ -257,5 +267,7 @@ This plan does not approve product scope changes, voice/TTS/audio, AI counseling
 
 | version | date | note |
 | --- | --- | --- |
+| 0.3.1 | 2026-06-26 | Screen 4 upgraded from single native time input to multiple saved times, add/edit sheet, quick presets, AM/PM toggle, and 5-minute adjustment controls. Kept existing color tokens after design preflight; React Bits not used because the change is form/control ergonomics rather than expressive motion. |
+| 0.3.0 | 2026-06-26 | Active app moved to `내편한마디` with AI candidate cards, mode selection for praise/nudge, AI notice/reporting, real browser notification attempt, Vault/Settings navigation, and mobile screenshots for candidate/home verification. |
 | 0.1.0 | 2026-06-20 | Visual/UI A1 restart candidate created from project samples, original design lineage, approved 6-screen UX, and D-20260620-016 visual rejection. |
 | 0.2.0 | 2026-06-20 | A2 final: B1 layout challenge 7건 전면 수용. Screen 2 → 3장+reveal, Screen 5 → 동등 choice card 3장, language switcher → landing-only 44px, CLS reserve, 6-dot rail, safe-area token, zero raw button rule, implementation handoff 명문화. |

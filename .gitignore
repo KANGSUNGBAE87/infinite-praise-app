@@ -6,3 +6,6 @@ coverage/
 .env.*
 !.env.example
 ai/tts-previews/
+
+# codebase-memory-mcp local index store
+.codebase-memory-home/
