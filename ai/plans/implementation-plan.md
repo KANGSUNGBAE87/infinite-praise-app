@@ -1,7 +1,7 @@
 ---
-version: 0.6.1
-status: implemented-v0.5
-updated: 2026-06-26
+version: 0.8.1
+status: completion-audited-hard-constrained-ai-candidates
+updated: 2026-07-05
 canonical: true
 project: 내편한마디
 topic: AI candidate + notification implementation plan
@@ -17,12 +17,45 @@ topic: AI candidate + notification implementation plan
 
 ## Implementation Result
 
+2026-07-05 Codex 구현 기준으로 AI 후보 생성이 선택 조합 hard constraint 구조로 전환됐다.
+
+- Screen 2 축은 `칭찬해줘`/`잔소리해줘` 모드별로 다른 라벨과 의미를 갖는다.
+- 축 선택 UI는 가로 스크롤 chip 대신 요약 행 + 선택 시트로 바뀌었다.
+- AI 요청은 `constraintBundle(mode, locale, situation, feeling, tone, intensity)`을 전송하고, 응답도 같은 bundle과 `expressionVariant` 5종을 요구한다.
+- 후보 5개 차이는 tone 차이가 아니라 `짧은 한마디`, `행동 제안형`, `인정 후 제안형`, `알림용 한 줄`, `단호 정리형` 표현 방식 차이로 고정됐다.
+- AI가 반환한 candidate id는 폐기하고 `ai-1..ai-5`로 재발급한다. 신고 endpoint와 DB constraint도 raw text smuggling을 막기 위해 candidate id allowlist를 적용한다.
+- 신고 계약은 `style`에서 `expressionVariant`/`expression_variant`로 전환됐다. 서버/API도 `style` alias를 받지 않는다.
+- Apps in Toss runtime에서는 공식 알림 동의/Smart Message 준비 전까지 알림을 preview-only로 처리한다.
+- 직접 입력/최종 저장/보관함 문장이 이 기기의 localStorage에 남을 수 있다는 고지, 전체 삭제 버튼, 정적 `privacy.html`이 추가됐다.
+
+2026-07-05 Codex 구현 기준으로 AI 후보 생성 경로가 Supabase Edge Function으로 전환됐다.
+
+- `generate-candidates` Supabase Edge Function이 DeepSeek를 서버 측에서 호출한다.
+- 앱 클라이언트는 `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`로 Supabase Function route만 호출하며 DeepSeek key를 보지 않는다.
+- 로컬 Vite, GitHub Pages, Apps in Toss, Google Play는 같은 Supabase Function 경로를 사용할 수 있다.
+- 기존 `/api/generate-candidates`는 legacy/server-route fallback으로 남아 있지만, public static hosting의 기본 경로는 Supabase Edge Function이다.
+- 실제 Supabase smoke test에서 `공부안했어` 입력으로 AI 후보 5개 반환을 확인했다.
+- `report-candidate` Supabase Edge Function과 report table은 준비됐다. 다만 현재 shared admin env에 service-role JWT가 비어 있어 report persistence는 `stored=false` 상태이며, service-role JWT 세팅 후 저장까지 활성화해야 한다.
+
+2026-07-04 Codex 구현 기준으로 v0.6 AI three-mode + taxonomy + guardrail 범위가 완료됐다.
+
+- Screen 2 is now `칭찬해줘 / 잔소리해줘 / 직접 쓸게`.
+- `칭찬해줘`/`잔소리해줘`는 situation, feeling, tone, intensity, purpose metadata를 포함해 `/api/generate-candidates`를 호출한다.
+- `직접 쓸게`는 AI 호출 없이 로컬 안전검사를 거쳐 선택 문구로 저장하고 바로 시간 설정으로 이동한다.
+- AI 프록시가 없거나 실패하면 로컬 fallback 후보를 화면에 표시하지 않고, 연결 필요 안내만 보여준다.
+- `src/data/message-templates.v0.1.json` template metadata는 taxonomy seed, 테스트, 향후 CMS 이관 기준으로 유지하되 현재 사용자-facing 후보 fallback으로 쓰지 않는다.
+- Shared `messageSafety` handles pre-send masking, blocked/caution classification, and unsafe AI output rejection.
+- `/api/generate-candidates` now targets `deepseek-v4-pro`, requests JSON output, rate-limits per client key, sends sanitized context only, and rejects crisis/medical/hate/violence/shaming output.
+- Candidate reporting now has a server-ready `/api/report-candidate` route. It sends/stores metadata only; raw user context and raw candidate text are intentionally not persisted.
+- Supabase-ready report table migration added at `supabase/migrations/20260704150000_praise_candidate_reports.sql`.
+- GitHub Pages remains static hosting. In production, real DeepSeek/report persistence requires deploying the API routes through Supabase Edge Function, Vercel, Netlify, or Cloudflare Worker.
+
 2026-06-26 Codex 구현 기준으로 v0.5 AI candidate + browser notification 범위가 완료됐다.
 
 - Active app title/copy: `내편한마디` / `A Word for Me`.
 - Screen 2 is now `칭찬해줘 / 잔소리해줘`: situation input -> AI candidate generation -> label/report/select.
-- `MessageGenerationAdapter` calls `/api/generate-candidates`; if unavailable, it returns safe local fallback candidates.
-- `/api/generate-candidates` is a server-only DeepSeek proxy path using `DEEPSEEK_API_KEY`, `deepseek-v4-flash`, JSON output, and no client-exposed key.
+- `MessageGenerationAdapter` calls `/api/generate-candidates`; if unavailable, it returns no candidates and the UI shows an AI connection notice.
+- `/api/generate-candidates` is a server-only DeepSeek proxy path using `DEEPSEEK_API_KEY`, JSON output, and no client-exposed key.
 - `NotificationAdapter` now uses the browser Notification API when available and permission is granted; unsupported/denied environments fall back to app preview with clear notice.
 - Screen 4 now stores `scheduleTimes[]`, lets the user add/edit/remove multiple notification times, and schedules one browser notification attempt per saved time.
 - Generation context and candidate drafts are sanitized out of localStorage; final selected/edited user line remains stored as app state.
@@ -694,6 +727,11 @@ npm run dev -- --port 5174
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| 0.8.0 | 2026-07-05 | Converted AI candidates to hard-constrained `constraintBundle` + `expressionVariant` contract, added mode-specific axis picker UI, report schema hardening, canonical candidate IDs, privacy/local-storage notice, Toss preview-only notification gate, and browser overflow QA. |
+| 0.8.1 | 2026-07-05 | Completion-audit cleanup: removed remaining legacy `style` template fields and report alias, renamed candidate label CSS to `candidate-variant`, and added style-only report rejection coverage. |
+| 0.7.2 | 2026-07-05 | Switched app AI generation to Supabase Edge Function default path, deployed `generate-candidates`/`report-candidate`, confirmed real AI 5-candidate smoke, and superseded the temporary Mac-local AI env standard. |
+| 0.7.1 | 2026-07-05 | Removed user-facing local fallback candidates when the AI proxy is unavailable; UI now shows an AI connection notice with no generated cards. |
+| 0.7.0 | 2026-07-04 | Added praise/nag/custom three-mode UI, message taxonomy metadata, local template catalog seed, shared safety/masking, DeepSeek V4 Pro server proxy parameters, metadata-only candidate reporting endpoint, Supabase report migration, and updated tests/build. |
 | 0.6.1 | 2026-06-26 | Added multi-time notification scheduling. `AppState` now keeps `scheduleTimes[]` with legacy `scheduleTime` migration; schedule screen uses a custom add/edit sheet and schedules every saved time. |
 | 0.6 | 2026-06-26 | AI candidate mode, DeepSeek server proxy boundary, AI labels/reporting, browser Notification API scheduling attempt, privacy-safe state persistence, and updated tests/build/browser QA completed. |
 | 0.5 | 2026-06-19 | 6-screen Architecture A/B alignment, trust-safe analytics boundary, and minimal platform boundary updated. |

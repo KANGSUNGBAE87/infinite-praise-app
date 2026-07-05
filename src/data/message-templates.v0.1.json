@@ -1,4 +1,5 @@
 {
+  "version": "0.1",
   "releaseTemplates": [
     {
       "id": "praise-held-today",
@@ -136,6 +137,236 @@
       "notificationText": "작성한 내용이 있다면 지금 보내세요.",
       "tags": ["send", "direct", "finish"],
       "status": "release"
+    }
+  ],
+  "templates": [
+    {
+      "id": "ko-praise-general-tired-warm-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["general"],
+      "feelings": ["tired", "overwhelmed"],
+      "tones": ["warm", "calm"],
+      "intensities": ["gentle"],
+      "purpose": "recognize",
+      "text": "{context}까지 버틴 건 분명히 오늘의 힘이야.",
+      "notificationText": "{context}, 오늘도 버텼어."
+    },
+    {
+      "id": "ko-praise-general-proud-practical-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["general", "work", "study"],
+      "feelings": ["proud"],
+      "tones": ["practical", "direct"],
+      "intensities": ["firm"],
+      "purpose": "recognize",
+      "text": "{context}은 작아 보여도 실제로 해낸 일이야.",
+      "notificationText": "실제로 해낸 일이야."
+    },
+    {
+      "id": "ko-praise-work-overwhelmed-calm-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["work"],
+      "feelings": ["overwhelmed", "tired"],
+      "tones": ["calm", "warm"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "rest",
+      "text": "일이 많았어도 {context}까지 온 너를 인정해.",
+      "notificationText": "여기까지 온 너를 인정해."
+    },
+    {
+      "id": "ko-praise-study-anxious-calm-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["study"],
+      "feelings": ["anxious", "overwhelmed"],
+      "tones": ["calm", "warm"],
+      "intensities": ["gentle"],
+      "purpose": "reassure",
+      "text": "{context}을 완벽하게 못 해도, 시작한 마음은 사라지지 않아.",
+      "notificationText": "시작한 마음은 사라지지 않아."
+    },
+    {
+      "id": "ko-praise-exercise-tired-warm-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["exercise"],
+      "feelings": ["tired", "proud"],
+      "tones": ["warm", "short"],
+      "intensities": ["gentle"],
+      "purpose": "recognize",
+      "text": "{context}, 몸을 움직이려 한 것만으로도 잘했어.",
+      "notificationText": "움직이려 한 것만으로도 잘했어."
+    },
+    {
+      "id": "ko-praise-sleep-calm-1",
+      "locale": "ko",
+      "mode": "praise",
+      "situations": ["sleep"],
+      "feelings": ["tired", "overwhelmed"],
+      "tones": ["calm", "warm"],
+      "intensities": ["gentle"],
+      "purpose": "rest",
+      "text": "오늘은 {context}보다 쉬는 게 더 중요한 날일 수 있어.",
+      "notificationText": "쉬는 것도 오늘의 선택이야."
+    },
+    {
+      "id": "ko-nag-study-procrastinating-direct-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["study"],
+      "feelings": ["procrastinating", "stuck"],
+      "tones": ["direct", "practical"],
+      "intensities": ["firm", "bold"],
+      "purpose": "start",
+      "text": "{context}, 지금 첫 문제만 열자.",
+      "notificationText": "첫 문제만 열자."
+    },
+    {
+      "id": "ko-nag-study-procrastinating-practical-2",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["study"],
+      "feelings": ["procrastinating", "overwhelmed"],
+      "tones": ["practical", "calm"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "start",
+      "text": "전부 말고 {context} 5분만 하자.",
+      "notificationText": "5분만 하자."
+    },
+    {
+      "id": "ko-nag-phone-procrastinating-direct-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["phone"],
+      "feelings": ["procrastinating", "stuck"],
+      "tones": ["direct", "short"],
+      "intensities": ["firm", "bold"],
+      "purpose": "stop",
+      "text": "폰은 내려두고 {context} 하나만 열어.",
+      "notificationText": "폰 내려두고 하나만 열어."
+    },
+    {
+      "id": "ko-nag-work-overwhelmed-calm-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["work"],
+      "feelings": ["overwhelmed", "stuck"],
+      "tones": ["calm", "practical"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "start",
+      "text": "{context}을 다 끝내려 하지 말고 첫 줄만 정리하자.",
+      "notificationText": "첫 줄만 정리하자."
+    },
+    {
+      "id": "ko-nag-exercise-tired-warm-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["exercise"],
+      "feelings": ["tired", "procrastinating"],
+      "tones": ["warm", "direct"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "start",
+      "text": "하기 싫은 건 알겠고, {context}은 5분만 시작하자.",
+      "notificationText": "5분만 시작하자."
+    },
+    {
+      "id": "ko-nag-chores-stuck-practical-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["chores"],
+      "feelings": ["stuck", "procrastinating"],
+      "tones": ["practical", "short"],
+      "intensities": ["firm"],
+      "purpose": "start",
+      "text": "{context}, 딱 하나만 치우고 멈춰도 돼.",
+      "notificationText": "딱 하나만 치우자."
+    },
+    {
+      "id": "ko-nag-sleep-direct-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["sleep"],
+      "feelings": ["tired", "procrastinating"],
+      "tones": ["direct", "calm"],
+      "intensities": ["firm"],
+      "purpose": "stop",
+      "text": "{context}은 내일의 너에게 넘기고 지금은 누워.",
+      "notificationText": "지금은 누워."
+    },
+    {
+      "id": "ko-nag-general-witty-1",
+      "locale": "ko",
+      "mode": "nag",
+      "situations": ["general"],
+      "feelings": ["procrastinating"],
+      "tones": ["witty", "short"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "start",
+      "text": "생각 회의는 충분했어. {context} 하나만 실행.",
+      "notificationText": "생각 회의 끝. 하나만 실행."
+    },
+    {
+      "id": "en-praise-general-warm-1",
+      "locale": "en",
+      "mode": "praise",
+      "situations": ["general", "work", "study"],
+      "feelings": ["tired", "proud", "overwhelmed"],
+      "tones": ["warm", "calm"],
+      "intensities": ["gentle"],
+      "purpose": "recognize",
+      "text": "You carried {context} farther than it looked from the outside.",
+      "notificationText": "You carried it farther than it looked."
+    },
+    {
+      "id": "en-praise-calm-2",
+      "locale": "en",
+      "mode": "praise",
+      "situations": ["general", "sleep"],
+      "feelings": ["tired", "anxious"],
+      "tones": ["calm"],
+      "intensities": ["gentle"],
+      "purpose": "rest",
+      "text": "{context} did not have to be perfect to count.",
+      "notificationText": "It counts, even imperfectly."
+    },
+    {
+      "id": "en-nag-study-direct-1",
+      "locale": "en",
+      "mode": "nag",
+      "situations": ["study"],
+      "feelings": ["procrastinating", "stuck"],
+      "tones": ["direct", "practical"],
+      "intensities": ["firm", "bold"],
+      "purpose": "start",
+      "text": "Open {context} and do the first problem. Just one.",
+      "notificationText": "Do the first problem."
+    },
+    {
+      "id": "en-nag-work-calm-1",
+      "locale": "en",
+      "mode": "nag",
+      "situations": ["work", "general"],
+      "feelings": ["overwhelmed", "procrastinating"],
+      "tones": ["calm", "practical"],
+      "intensities": ["gentle", "firm"],
+      "purpose": "start",
+      "text": "Do not finish all of {context}. Open the first piece.",
+      "notificationText": "Open the first piece."
+    },
+    {
+      "id": "en-nag-phone-short-1",
+      "locale": "en",
+      "mode": "nag",
+      "situations": ["phone"],
+      "feelings": ["procrastinating", "stuck"],
+      "tones": ["short", "direct"],
+      "intensities": ["firm"],
+      "purpose": "stop",
+      "text": "Phone down. Open {context}.",
+      "notificationText": "Phone down. Open it."
     }
   ]
 }

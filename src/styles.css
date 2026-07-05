@@ -105,6 +105,50 @@ button:disabled {
     var(--pm-bg);
 }
 
+.app-shell.has-top-back {
+  padding-top: calc(68px + env(safe-area-inset-top, 0px));
+}
+
+.app-shell.has-bottom-nav {
+  padding-bottom: calc(112px + var(--pm-safe-bottom));
+}
+
+.top-back-button {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  left: max(16px, env(safe-area-inset-left));
+  z-index: 20;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--pm-text-strong);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid var(--pm-border);
+  border-radius: 50%;
+  box-shadow: var(--pm-shadow-card);
+  backdrop-filter: blur(12px);
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.top-back-button span {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.top-back-button:hover {
+  background: var(--pm-primary-soft-2);
+  border-color: var(--pm-primary);
+  transform: translateY(-1px);
+}
+
+.top-back-button:active {
+  transform: translateY(0);
+}
+
 .app-home {
   position: relative;
   z-index: 1;
@@ -315,6 +359,7 @@ button:disabled {
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
+  text-decoration: none;
   letter-spacing: 0;
   word-break: keep-all;
   background: var(--pm-surface);
@@ -606,6 +651,140 @@ button:disabled {
 .pm-choice-card.amber  { background: linear-gradient(135deg, var(--pm-yellow) 0%, #FFFDF5 100%); }
 .pm-choice-card.quiet  { background: transparent; border-color: var(--pm-border); }
 
+/* ─────────────── Message axis selector ─────────────── */
+.axis-panel {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  background: var(--pm-surface);
+  border: 1.5px solid var(--pm-border);
+  border-radius: var(--pm-radius-card);
+  box-shadow: var(--pm-shadow-card);
+}
+
+.axis-summary-button {
+  display: grid;
+  grid-template-columns: minmax(64px, 0.4fr) 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--pm-text-strong);
+  text-align: left;
+  background: var(--pm-surface-soft);
+  border: 1.5px solid transparent;
+  border-radius: 18px;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.axis-summary-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--pm-primary-soft);
+}
+
+.axis-summary-label {
+  color: var(--pm-text-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.axis-summary-value {
+  min-width: 0;
+  color: var(--pm-text-strong);
+  font-size: 16px;
+  font-weight: 850;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+.axis-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(36, 32, 46, 0.28);
+  backdrop-filter: blur(5px);
+}
+
+.axis-sheet {
+  width: min(100%, 480px);
+  max-height: min(72vh, 560px);
+  overflow: auto;
+  padding: 18px;
+  background: var(--pm-surface);
+  border: 1px solid var(--pm-border);
+  border-radius: 24px 24px 18px 18px;
+  box-shadow: 0 20px 48px rgba(43, 34, 58, 0.22);
+}
+
+.axis-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.axis-sheet-head h3 {
+  margin: 0;
+  color: var(--pm-text-strong);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.axis-sheet-close {
+  width: 38px;
+  height: 38px;
+  color: var(--pm-text-muted);
+  font-size: 24px;
+  font-weight: 700;
+  background: var(--pm-surface-soft);
+  border: 0;
+  border-radius: 50%;
+}
+
+.axis-option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.axis-option-card {
+  display: grid;
+  gap: 4px;
+  min-height: 74px;
+  padding: 12px;
+  color: var(--pm-text-strong);
+  text-align: left;
+  background: var(--pm-surface-soft);
+  border: 1.5px solid transparent;
+  border-radius: 18px;
+}
+
+.axis-option-card span {
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+.axis-option-card small {
+  color: var(--pm-text-muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.axis-option-card.is-selected {
+  color: var(--pm-primary);
+  background: var(--pm-primary-soft-2);
+  border-color: var(--pm-primary);
+}
+
 /* ─────────────── Hero quote panel (home) ─────────────── */
 .hero-panel {
   min-height: 210px;
@@ -829,11 +1008,11 @@ button:disabled {
   box-shadow: var(--pm-shadow-card);
 }
 
-.candidate-card.warm { border-color: rgba(113, 97, 232, 0.26); }
-.candidate-card.short { border-color: rgba(80, 150, 128, 0.28); }
-.candidate-card.practical { border-color: rgba(180, 141, 35, 0.28); }
-.candidate-card.calm { border-color: rgba(100, 130, 190, 0.28); }
-.candidate-card.direct { border-color: rgba(190, 96, 72, 0.26); }
+.candidate-card.short_sentence { border-color: rgba(113, 97, 232, 0.26); }
+.candidate-card.action_suggestion { border-color: rgba(80, 150, 128, 0.28); }
+.candidate-card.ack_then_act { border-color: rgba(180, 141, 35, 0.28); }
+.candidate-card.notification_short { border-color: rgba(100, 130, 190, 0.28); }
+.candidate-card.firmer_line { border-color: rgba(190, 96, 72, 0.26); }
 
 .candidate-card .preview-badge {
   justify-self: start;
@@ -845,7 +1024,7 @@ button:disabled {
   border-radius: var(--pm-radius-pill);
 }
 
-.candidate-style {
+.candidate-variant {
   color: var(--pm-text-muted);
   font-size: 12px;
   font-weight: 800;

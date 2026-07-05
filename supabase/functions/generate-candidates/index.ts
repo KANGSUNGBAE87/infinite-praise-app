@@ -1,6 +1,4 @@
-/// <reference types="node" />
-
-import { getBlockedReason, isBlockedText, sanitizeGenerationContext } from "../src/core/messageSafety";
+import { getBlockedReason, isBlockedText, sanitizeGenerationContext } from "../_shared/message-safety.ts";
 
 type MessageMode = "praise" | "nag";
 type Locale = "ko" | "en";
@@ -30,28 +28,36 @@ type CandidateRequest = {
   constraintBundle?: Partial<ConstraintBundle>;
 };
 
-type ApiRequest = {
-  method?: string;
-  body?: unknown;
-  headers?: Record<string, string | string[] | undefined>;
-};
-
-type ApiResponse = {
-  status(code: number): {
-    json(payload: unknown): void;
-  };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 const expressionVariants: ExpressionVariant[] = ["short_sentence", "action_suggestion", "ack_then_act", "notification_short", "firmer_line"];
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
 
-function getClientKey(req: ApiRequest) {
-  const forwarded = req.headers?.["x-forwarded-for"];
-  const raw = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-  return raw?.split(",")[0]?.trim() || "local";
+function jsonResponse(payload: unknown, status = 200) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
 }
 
-function isRateLimited(req: ApiRequest) {
+function wantsDebug(req: Request) {
+  return req.headers.get("x-debug-shape") === "1";
+}
+
+function getClientKey(req: Request) {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("cf-connecting-ip") ||
+    "edge";
+}
+
+function isRateLimited(req: Request) {
   const key = getClientKey(req);
   const now = Date.now();
   const current = rateLimitBuckets.get(key);
@@ -61,16 +67,6 @@ function isRateLimited(req: ApiRequest) {
   }
   current.count += 1;
   return current.count > 20;
-}
-
-function parseBody(body: unknown): CandidateRequest {
-  if (typeof body === "string") return JSON.parse(body) as CandidateRequest;
-  return (body ?? {}) as CandidateRequest;
-}
-
-function extractJsonObject(content: string): unknown {
-  const trimmed = content.trim().replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
-  return JSON.parse(trimmed);
 }
 
 function isSituation(value: unknown): value is MessageSituation {
@@ -129,6 +125,11 @@ function sanitizeRequest(body: CandidateRequest) {
   };
 
   return { ...constraintBundle, context, constraintBundle };
+}
+
+function extractJsonObject(content: string): unknown {
+  const trimmed = content.trim().replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+  return JSON.parse(trimmed);
 }
 
 const axisLabelMaps = {
@@ -237,41 +238,43 @@ function normalizeCandidates(payload: unknown, mode: MessageMode) {
   return candidates.length === 5 ? candidates : null;
 }
 
-export default async function handler(req: ApiRequest, res: ApiResponse) {
-  if (req.method && req.method !== "POST") {
-    res.status(405).json({ decision: "blocked", reasonCode: "method_not_allowed" });
-    return;
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  if (req.method !== "POST") {
+    return jsonResponse({ decision: "blocked", reasonCode: "method_not_allowed" }, 405);
   }
 
   if (isRateLimited(req)) {
-    res.status(429).json({ decision: "blocked", reasonCode: "rate_limited" });
-    return;
+    return jsonResponse({ decision: "blocked", reasonCode: "rate_limited" }, 429);
   }
 
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+  const apiKey = Deno.env.get("DEEPSEEK_API_KEY");
   if (!apiKey) {
-    res.status(503).json({ decision: "blocked", reasonCode: "ai_key_missing" });
-    return;
+    return jsonResponse({ decision: "blocked", reasonCode: "ai_key_missing" }, 503);
   }
+  const baseUrl = Deno.env.get("DEEPSEEK_BASE_URL")?.trim().replace(/\/$/, "") || "https://api.deepseek.com";
+  const model = Deno.env.get("PRAISE_DEEPSEEK_MODEL")?.trim() || "deepseek-chat";
 
   try {
-    const body = parseBody(req.body);
+    const body = await req.json().catch(() => ({})) as CandidateRequest;
     const { mode, locale, context, situation, feeling, tone, intensity, constraintBundle } = sanitizeRequest(body);
 
     const reasonCode = getBlockedReason(context);
     if (reasonCode) {
-      res.status(200).json({ decision: "blocked", reasonCode });
-      return;
+      return jsonResponse({ decision: "blocked", reasonCode });
     }
 
-    const deepseekResponse = await fetch("https://api.deepseek.com/chat/completions", {
+    const deepseekResponse = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "deepseek-v4-pro",
+        model,
         messages: [
           {
             role: "system",
@@ -289,26 +292,68 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     });
 
     if (!deepseekResponse.ok) {
-      res.status(502).json({ decision: "blocked", reasonCode: "ai_proxy_failed" });
-      return;
+      return jsonResponse({ decision: "blocked", reasonCode: "ai_proxy_failed" }, 502);
     }
 
-    const payload = await deepseekResponse.json() as { choices?: Array<{ message?: { content?: string } }> };
-    const content = payload.choices?.[0]?.message?.content;
+    const payload = await deepseekResponse.json() as {
+      choices?: Array<{
+        finish_reason?: string;
+        message?: {
+          content?: string;
+          reasoning_content?: string;
+        };
+        text?: string;
+      }>;
+    };
+    const firstChoice = payload.choices?.[0];
+    const finalContent = firstChoice?.message?.content;
+    const reasoningContent = firstChoice?.message?.reasoning_content;
+    const content = finalContent || firstChoice?.text;
     if (!content) {
-      res.status(502).json({ decision: "blocked", reasonCode: "empty_ai_response" });
-      return;
+      return jsonResponse({
+        decision: "blocked",
+        reasonCode: "empty_ai_response",
+        finishReason: firstChoice?.finish_reason ?? null,
+        ...(wantsDebug(req) ? {
+          contentLength: finalContent?.length ?? 0,
+          reasoningLength: reasoningContent?.length ?? 0,
+        } : {}),
+      }, 502);
     }
 
-    const parsed = extractJsonObject(content);
+    let parsed: unknown;
+    try {
+      parsed = extractJsonObject(content);
+    } catch {
+      return jsonResponse({
+        decision: "blocked",
+        reasonCode: "invalid_ai_response",
+        finishReason: firstChoice?.finish_reason ?? null,
+        ...(wantsDebug(req) ? {
+          contentLength: content.length,
+          reasoningLength: reasoningContent?.length ?? 0,
+        } : {}),
+      }, 502);
+    }
     const candidates = normalizeCandidates(parsed, mode);
     if (!candidates) {
-      res.status(502).json({ decision: "blocked", reasonCode: "invalid_ai_response" });
-      return;
+      return jsonResponse({
+        decision: "blocked",
+        reasonCode: "invalid_ai_response",
+        finishReason: firstChoice?.finish_reason ?? null,
+        ...(wantsDebug(req) ? {
+          contentLength: content.length,
+          reasoningLength: reasoningContent?.length ?? 0,
+        } : {}),
+      }, 502);
     }
 
-    res.status(200).json({ decision: "ok", constraintBundle, candidates });
-  } catch {
-    res.status(500).json({ decision: "blocked", reasonCode: "server_error" });
+    return jsonResponse({ decision: "ok", constraintBundle, candidates });
+  } catch (error) {
+    return jsonResponse({
+      decision: "blocked",
+      reasonCode: "server_error",
+      ...(wantsDebug(req) ? { errorName: error instanceof Error ? error.name : "unknown" } : {}),
+    }, 500);
   }
-}
+});

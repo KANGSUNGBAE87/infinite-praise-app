@@ -1,7 +1,7 @@
 ---
-version: 0.3.1
-status: implemented-v0.5-candidate
-updated: 2026-06-26 KST
+version: 0.4.1
+status: implemented-v0.6-ai-server-required
+updated: 2026-07-05 KST
 canonical: true
 project: 내편한마디
 source_stage: stages/12_UI_DESIGN.md
@@ -16,11 +16,11 @@ visual_restart_decision: D-20260620-016
 
 ## Current status
 
-v0.5 AI candidate + notification candidate implementation is live in the React app. The current active UX differs from the A2 `3 praise cards + reveal` direction:
+v0.6 AI candidate + notification candidate implementation is live in the React app. The current active UX differs from the A2 `3 praise cards + reveal` direction:
 
 - Screen 1 brand is `내편한마디` / `A Word for Me`.
-- Screen 2 uses two mode cards (`칭찬해줘`, `잔소리해줘`), a situation textarea, AI usage notice, generated candidate cards, AI labels, and report actions.
-- Candidate cards use the existing soft pastel/card DNA but allow up to five generated cards below the fold.
+- Screen 2 uses three mode cards (`칭찬해줘`, `잔소리해줘`, `직접 쓸게`), situation/feeling/tone/intensity chips for AI modes, a custom direct-writing state, AI usage notice, generated candidate cards, AI labels, and report actions.
+- Candidate cards use the existing soft pastel/card DNA but appear only after a successful AI server response. AI proxy failure shows a compact caution message instead of local/default candidate cards.
 - Home shows browser/platform notification status after save.
 - Bottom navigation now opens actual Home/Vault/Settings views.
 
@@ -267,6 +267,7 @@ This plan does not approve voice/TTS/audio, AI counseling/diagnosis/treatment, l
 
 | version | date | note |
 | --- | --- | --- |
+| 0.4.0 | 2026-07-04 | Screen 2 expanded to three explicit modes. AI modes now use compact horizontal axis chips for situation, feeling, tone, and intensity; `직접 쓸게` switches to a direct-writing panel and skips AI candidate cards. |
 | 0.3.1 | 2026-06-26 | Screen 4 upgraded from single native time input to multiple saved times, add/edit sheet, quick presets, AM/PM toggle, and 5-minute adjustment controls. Kept existing color tokens after design preflight; React Bits not used because the change is form/control ergonomics rather than expressive motion. |
 | 0.3.0 | 2026-06-26 | Active app moved to `내편한마디` with AI candidate cards, mode selection for praise/nudge, AI notice/reporting, real browser notification attempt, Vault/Settings navigation, and mobile screenshots for candidate/home verification. |
 | 0.1.0 | 2026-06-20 | Visual/UI A1 restart candidate created from project samples, original design lineage, approved 6-screen UX, and D-20260620-016 visual rejection. |

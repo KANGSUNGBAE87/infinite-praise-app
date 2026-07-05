@@ -58,6 +58,14 @@ const createMemoryStorage = () => { const items = new Map<string, string>(); ret
 const getDefaultStorage = () => (typeof window !== "undefined" && window.localStorage ? window.localStorage : createMemoryStorage());
 const notificationTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
+function isAppsInTossRuntime(): boolean {
+  if (typeof window === "undefined") return false;
+  const { hostname, protocol, search } = window.location;
+  return protocol.startsWith("intoss")
+    || hostname.endsWith("tossmini.com")
+    || search.includes("_deploymentId=");
+}
+
 function getNotificationApi(): typeof Notification | null {
   return typeof globalThis !== "undefined" && "Notification" in globalThis
     ? globalThis.Notification
@@ -70,6 +78,7 @@ function mapPermission(permission: NotificationPermission): "granted" | "denied"
 }
 
 export function createMvpPlatformAdapters(storageBackend = getDefaultStorage()): PlatformAdapters {
+  const notificationCapability: NotificationCapability = isAppsInTossRuntime() ? "preview_only" : "permission_required";
   return {
     auth: { status:"stub", plannedProviders:["apps_in_toss","google_play"], async getCurrentUser(){ return { status: "anonymous" }; } },
     payment: { status:"stub", plannedStores:["apps_in_toss_iap","google_play_billing"], async hasEntitlement(){ return false; } },
@@ -78,12 +87,14 @@ export function createMvpPlatformAdapters(storageBackend = getDefaultStorage()):
     analytics: { status:"stub", async track(){ return { tracked:false, reason:"analytics_disabled_in_mvp" }; } },
     notifications: {
       status:"enabled",
-      capability:"permission_required",
+      capability: notificationCapability,
       async getPermissionStatus(){
+        if (notificationCapability === "preview_only") return "unsupported";
         const notificationApi = getNotificationApi();
         return notificationApi ? mapPermission(notificationApi.permission) : "unsupported";
       },
       async requestPermission(){
+        if (notificationCapability === "preview_only") return "unsupported";
         const notificationApi = getNotificationApi();
         if (!notificationApi) return "unsupported";
         if (notificationApi.permission === "granted" || notificationApi.permission === "denied") {
@@ -92,6 +103,7 @@ export function createMvpPlatformAdapters(storageBackend = getDefaultStorage()):
         return mapPermission(await notificationApi.requestPermission());
       },
       async scheduleReminder(reminder){
+        if (notificationCapability === "preview_only") return { status:"preview_only", reason:"notifications_stubbed_in_mvp" };
         const notificationApi = getNotificationApi();
         if (!notificationApi) return { status:"blocked", reason:"unsupported" };
         if (notificationApi.permission !== "granted") return { status:"blocked", reason:"permission_denied" };

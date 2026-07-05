@@ -4,6 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "../src/App";
 
 const trackedEvents: Array<{ eventName: string; properties?: Record<string, unknown> | undefined }> = [];
+const aiCandidates = [
+  { id: "c1", text: "오늘 발표 끝낸 건 분명히 해낸 일이야.", notificationText: "발표 끝낸 너, 오늘 해냈어.", expressionVariant: "short_sentence", mode: "praise", source: "ai" },
+  { id: "c2", text: "긴장했어도 끝까지 간 네가 멋져.", notificationText: "끝까지 간 네가 멋져.", expressionVariant: "action_suggestion", mode: "praise", source: "ai" },
+  { id: "c3", text: "완벽하지 않아도 마친 건 사라지지 않아.", notificationText: "마친 건 사라지지 않아.", expressionVariant: "ack_then_act", mode: "praise", source: "ai" },
+  { id: "c4", text: "오늘은 스스로에게 잘했다고 해도 돼.", notificationText: "스스로에게 잘했다고 해도 돼.", expressionVariant: "notification_short", mode: "praise", source: "ai" },
+  { id: "c5", text: "발표를 마친 너는 이미 한 고비를 넘었어.", notificationText: "한 고비를 넘었어.", expressionVariant: "firmer_line", mode: "praise", source: "ai" },
+];
 
 vi.mock("../src/platform/adapters", () => ({
   createMvpPlatformAdapters: () => ({
@@ -36,18 +43,29 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
   };
 
+  const stubAiSuccess = () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body ?? "{}"));
+      return new Response(JSON.stringify({
+        decision: "ok",
+        constraintBundle: body.constraintBundle,
+        candidates: aiCandidates,
+      }), { status: 200 });
+    }));
+  };
+
   const openAiCandidateScreen = async (user: ReturnType<typeof userEvent.setup>) => {
     render(<App />);
     await user.click(screen.getByRole("button", { name: "AI로 한마디 만들기" }));
   };
 
   const openRewriteScreen = async (user: ReturnType<typeof userEvent.setup>) => {
-    stubAiFailure();
+    stubAiSuccess();
     await openAiCandidateScreen(user);
     await user.type(screen.getByRole("textbox", { name: "상황이나 해야 할 일을 짧게 적어주세요" }), "오늘 발표를 끝냈어");
     await user.click(screen.getByRole("button", { name: "AI 후보 5개 만들기" }));
-    expect(await screen.findAllByText("기본 후보")).toHaveLength(5);
-    const candidates = await screen.findAllByRole("button", { name: /오늘 발표를 끝냈어/ });
+    expect(await screen.findAllByText("AI가 만든 후보")).toHaveLength(5);
+    const candidates = await screen.findAllByRole("button", { name: /오늘 발표 끝낸 건 분명히 해낸 일이야/ });
     await user.click(candidates[0]!);
     await user.click(screen.getByRole("button", { name: "이 한마디로 계속" }));
   };
@@ -75,19 +93,15 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
 
     await user.type(screen.getByRole("textbox", { name: "상황이나 해야 할 일을 짧게 적어주세요" }), "오늘 발표를 끝냈어");
     await user.click(screen.getByRole("button", { name: "AI 후보 5개 만들기" }));
-    expect(await screen.findAllByText("기본 후보")).toHaveLength(5);
+    expect(await screen.findByText("AI 연결이 아직 준비되지 않았어요. 서버 프록시가 연결되면 후보를 만들 수 있어요.")).toBeInTheDocument();
+    expect(screen.queryByText("기본 후보")).not.toBeInTheDocument();
 
     const generatedStateText = window.localStorage.getItem("praise-me:state")!;
     const generatedState = JSON.parse(generatedStateText);
     expect(generatedState.generationContext).toBe("");
     expect(generatedState.generatedCandidates).toEqual([]);
     expect(generatedStateText).not.toContain("오늘 발표를 끝냈어");
-
-    const candidates = await screen.findAllByRole("button", { name: /오늘 발표를 끝냈어/ });
-    await user.click(candidates[0]!);
-    const selectedState = JSON.parse(window.localStorage.getItem("praise-me:state")!);
-    expect(selectedState.selectedPraiseId).toBe("fallback-praise-1");
-    expect(selectedState.selectedPraise).toContain("오늘 발표를 끝냈어");
+    expect(screen.queryByRole("button", { name: /오늘 발표를 끝냈어/ })).not.toBeInTheDocument();
   });
 
   it("restores reopened sessions from localStorage and protects against corrupted state", () => {
@@ -128,7 +142,7 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
     expect(screen.getByRole("heading", { name: "지금 나에게 필요한 말을 만들어볼까요?" })).toBeInTheDocument();
     expect(screen.getByText("칭찬이 필요할 때도, 잔소리가 필요할 때도 내 편에서 말해주는 한마디를 만들어요.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "AI로 한마디 만들기" })).toBeInTheDocument();
-    expect(screen.getByText("AI 후보와 알림은 권한 상태에 따라 동작해요.")).toBeInTheDocument();
+    expect(screen.getByText("알림은 브라우저 또는 플랫폼 권한 상태에 따라 동작해요.")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "English" }));
     expect(screen.getByRole("heading", { name: "A Word for Me", level: 1 })).toBeInTheDocument();
@@ -140,16 +154,18 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
     const user = userEvent.setup();
     await openAiCandidateScreen(user);
 
-    expect(screen.getByRole("heading", { name: "칭찬해줘 / 잔소리해줘" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "칭찬해줘 / 잔소리해줘 / 직접 쓸게" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "칭찬해줘" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "잔소리해줘" })).toBeInTheDocument();
-    expect(screen.getByText("AI가 만든 후보에는 라벨이 붙고, 불편한 문구는 바로 신고할 수 있어요.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "직접 쓸게" })).toBeInTheDocument();
+    expect(screen.getByText("입력 내용은 AI 처리를 위해 서버로 전송될 수 있고, 이름·연락처·건강정보는 보내지 않도록 마스킹해요.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "AI 후보 5개 만들기" })).toBeInTheDocument();
 
     await user.click(screen.getByText("A/가"));
-    expect(screen.getByRole("heading", { name: "Praise me / Nudge me" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Praise me / Nudge me / I'll write it" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Praise me" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Nudge me" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "I'll write it" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate 5 AI candidates" })).toBeInTheDocument();
   });
 
@@ -158,7 +174,7 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
     await openRewriteScreen(user);
 
     expect(screen.getByRole("heading", { name: "원하면 내 말로 조금 바꿔요" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "이 문장으로 저장" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "알림 시간 정하기" })).toBeInTheDocument();
     await user.clear(screen.getByRole("textbox"));
     await user.type(screen.getByRole("textbox"), "넌 왜 맨날 이러냐");
     expect(screen.getByText("이 문구는 조금 더 다정하게 바꿔도 좋아요.")).toBeInTheDocument();
@@ -178,16 +194,16 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
   it("renders schedule screen labels in both locales", async () => {
     const user = userEvent.setup();
     await openRewriteScreen(user);
-    await user.click(screen.getByRole("button", { name: "이 문장으로 저장" }));
+    await user.click(screen.getByRole("button", { name: "알림 시간 정하기" }));
 
     expect(screen.getByRole("heading", { name: "다시 보고 싶은 시간을 정해보세요" })).toBeInTheDocument();
     expect(screen.getByText("권한을 허용하면 브라우저 알림으로 다시 알려드려요.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "알림 예약하고 미리보기" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "이 문장으로 최종 저장" })).toBeInTheDocument();
 
     await user.click(screen.getByText("A/가"));
     expect(screen.getByRole("heading", { name: "When do you want to revisit this?" })).toBeInTheDocument();
     expect(screen.getByText("If you allow permission, the browser can notify you at the saved time.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Schedule notification & preview" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save this line" })).toBeInTheDocument();
   });
 
   it("renders check-in result and reopen source labels in both locales", async () => {
@@ -248,7 +264,8 @@ describe("내편한마디 v0.5: AI candidate flow + local persistence + i18n", (
 
     await user.type(screen.getByRole("textbox", { name: "상황이나 해야 할 일을 짧게 적어주세요" }), "오늘 발표를 끝냈어");
     await user.click(screen.getByRole("button", { name: "AI 후보 5개 만들기" }));
-    expect(await screen.findAllByText("기본 후보")).toHaveLength(5);
+    expect(await screen.findByText("AI 연결이 아직 준비되지 않았어요. 서버 프록시가 연결되면 후보를 만들 수 있어요.")).toBeInTheDocument();
+    expect(screen.queryByText("기본 후보")).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

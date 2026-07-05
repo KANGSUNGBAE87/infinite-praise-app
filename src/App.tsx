@@ -1,10 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createI18n, isLocale, localeOptions, type Locale } from "./i18n";
 import { sanitizeAnalytics } from "./core/analyticsSanitizer";
-import { createMessageGenerationAdapter, type MessageCandidate, type MessageMode } from "./core/messageGeneration";
+import { createCandidateReportAdapter } from "./core/candidateReporting";
+import {
+  createMessageGenerationAdapter,
+  type MessageCandidate,
+  type ExpressionVariant,
+  type MessageFeeling,
+  type MessageIntensity,
+  type MessageMode,
+  type MessageSituation,
+  type MessageTone,
+} from "./core/messageGeneration";
+import { classifyMessageSafety } from "./core/messageSafety";
 import { createMvpPlatformAdapters } from "./platform/adapters";
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
+type AppMessageMode = MessageMode | "custom";
+type AxisKey = "situation" | "feeling" | "tone" | "intensity";
 type CheckinAction = "keep" | "edit" | "skip";
 type InterestAction = "dismissed" | "registered";
 
@@ -18,7 +31,11 @@ type AppState = {
   sourceTag: string;
   step: Step;
   targetConfirmed: boolean;
-  messageMode: MessageMode;
+  messageMode: AppMessageMode;
+  messageSituation: MessageSituation;
+  messageFeeling: MessageFeeling;
+  messageTone: MessageTone;
+  messageIntensity: MessageIntensity;
   generationContext: string;
   generationStatus: "idle" | "loading" | "success" | "fallback" | "blocked" | "error";
   generatedCandidates: MessageCandidate[];
@@ -32,7 +49,7 @@ type AppState = {
   rewriteText: string;
   scheduleTime: string;
   previewText: string;
-  notificationStatus: "idle" | "unsupported" | "prompt" | "denied" | "scheduled" | "blocked";
+  notificationStatus: "idle" | "unsupported" | "prompt" | "denied" | "scheduled" | "blocked" | "preview_only";
   notificationMessage: string;
   checkinAction: CheckinAction | null;
   reopenSource: "manual" | "notification" | "unknown";
@@ -56,9 +73,7 @@ const allPraiseOptions = [
 
 const initialPraiseIds = ["p1", "p2", "p3"];
 const revealPraiseIds = ["p4", "p5"];
-
-const cautionKeywords = ["한심", "왜 맨날", "넌 왜"];
-const blockedKeywords = ["죽어", "자해", "폭력", "진단", "치료"];
+const aiUnavailableReasonCodes = new Set(["network", "invalid_response"]);
 
 const progressLabels = [
   "progress.start",
@@ -84,16 +99,128 @@ const emotionChips = [
   { id: "e4", icon: "💜", color: "lilac", i18nKey: "emotion.e4", descKey: "emotion.e4desc" },
 ] as const;
 
-const candidateStyleKeys: Record<string, string> = {
-  warm: "candidate.style.warm",
-  short: "candidate.style.short",
-  practical: "candidate.style.practical",
-  calm: "candidate.style.calm",
-  direct: "candidate.style.direct",
+const messageModes = ["praise", "nag", "custom"] as const;
+
+const modeCardMeta: Record<AppMessageMode, { icon: string; className: string }> = {
+  praise: { icon: "💜", className: "violet" },
+  nag: { icon: "⚡", className: "coral" },
+  custom: { icon: "✍", className: "green" },
 };
+
+type AxisOption<T extends string> = { id: T; labelKey: string; descKey?: string };
+
+const modeAxisDefaults: Record<MessageMode, {
+  messageSituation: MessageSituation;
+  messageFeeling: MessageFeeling;
+  messageTone: MessageTone;
+  messageIntensity: MessageIntensity;
+}> = {
+  praise: {
+    messageSituation: "study",
+    messageFeeling: "tired",
+    messageTone: "warm",
+    messageIntensity: "firm",
+  },
+  nag: {
+    messageSituation: "study",
+    messageFeeling: "procrastinating",
+    messageTone: "calm",
+    messageIntensity: "firm",
+  },
+};
+
+const axisOptionsByMode: Record<MessageMode, {
+  situation: Array<AxisOption<MessageSituation>>;
+  feeling: Array<AxisOption<MessageFeeling>>;
+  tone: Array<AxisOption<MessageTone>>;
+  intensity: Array<AxisOption<MessageIntensity>>;
+}> = {
+  praise: {
+    situation: [
+      { id: "study", labelKey: "axis.praise.situation.study", descKey: "axis.praise.situation.studyDesc" },
+      { id: "work", labelKey: "axis.praise.situation.work", descKey: "axis.praise.situation.workDesc" },
+      { id: "exercise", labelKey: "axis.praise.situation.exercise", descKey: "axis.praise.situation.exerciseDesc" },
+      { id: "chores", labelKey: "axis.praise.situation.chores", descKey: "axis.praise.situation.choresDesc" },
+      { id: "sleep", labelKey: "axis.praise.situation.sleep", descKey: "axis.praise.situation.sleepDesc" },
+      { id: "phone", labelKey: "axis.praise.situation.phone", descKey: "axis.praise.situation.phoneDesc" },
+    ],
+    feeling: [
+      { id: "tired", labelKey: "axis.praise.feeling.tired" },
+      { id: "procrastinating", labelKey: "axis.praise.feeling.procrastinating" },
+      { id: "anxious", labelKey: "axis.praise.feeling.anxious" },
+      { id: "proud", labelKey: "axis.praise.feeling.proud" },
+      { id: "overwhelmed", labelKey: "axis.praise.feeling.overwhelmed" },
+      { id: "stuck", labelKey: "axis.praise.feeling.stuck" },
+    ],
+    tone: [
+      { id: "warm", labelKey: "axis.praise.tone.warm" },
+      { id: "calm", labelKey: "axis.praise.tone.calm" },
+      { id: "practical", labelKey: "axis.praise.tone.practical" },
+      { id: "short", labelKey: "axis.praise.tone.short" },
+      { id: "direct", labelKey: "axis.praise.tone.direct" },
+      { id: "witty", labelKey: "axis.praise.tone.witty" },
+    ],
+    intensity: [
+      { id: "gentle", labelKey: "axis.praise.intensity.gentle" },
+      { id: "firm", labelKey: "axis.praise.intensity.firm" },
+      { id: "bold", labelKey: "axis.praise.intensity.bold" },
+    ],
+  },
+  nag: {
+    situation: [
+      { id: "study", labelKey: "axis.nag.situation.study", descKey: "axis.nag.situation.studyDesc" },
+      { id: "work", labelKey: "axis.nag.situation.work", descKey: "axis.nag.situation.workDesc" },
+      { id: "exercise", labelKey: "axis.nag.situation.exercise", descKey: "axis.nag.situation.exerciseDesc" },
+      { id: "chores", labelKey: "axis.nag.situation.chores", descKey: "axis.nag.situation.choresDesc" },
+      { id: "sleep", labelKey: "axis.nag.situation.sleep", descKey: "axis.nag.situation.sleepDesc" },
+      { id: "phone", labelKey: "axis.nag.situation.phone", descKey: "axis.nag.situation.phoneDesc" },
+    ],
+    feeling: [
+      { id: "tired", labelKey: "axis.nag.feeling.tired" },
+      { id: "procrastinating", labelKey: "axis.nag.feeling.procrastinating" },
+      { id: "anxious", labelKey: "axis.nag.feeling.anxious" },
+      { id: "proud", labelKey: "axis.nag.feeling.proud" },
+      { id: "overwhelmed", labelKey: "axis.nag.feeling.overwhelmed" },
+      { id: "stuck", labelKey: "axis.nag.feeling.stuck" },
+    ],
+    tone: [
+      { id: "warm", labelKey: "axis.nag.tone.warm" },
+      { id: "calm", labelKey: "axis.nag.tone.calm" },
+      { id: "practical", labelKey: "axis.nag.tone.practical" },
+      { id: "short", labelKey: "axis.nag.tone.short" },
+      { id: "direct", labelKey: "axis.nag.tone.direct" },
+      { id: "witty", labelKey: "axis.nag.tone.witty" },
+    ],
+    intensity: [
+      { id: "gentle", labelKey: "axis.nag.intensity.gentle" },
+      { id: "firm", labelKey: "axis.nag.intensity.firm" },
+      { id: "bold", labelKey: "axis.nag.intensity.bold" },
+    ],
+  },
+};
+
+const axisLabels: Record<AxisKey, string> = {
+  situation: "axis.situation",
+  feeling: "axis.feeling",
+  tone: "axis.tone",
+  intensity: "axis.intensity",
+};
+
+const candidateVariantKeys: Record<ExpressionVariant, string> = {
+  short_sentence: "candidate.variant.short",
+  action_suggestion: "candidate.variant.action",
+  ack_then_act: "candidate.variant.ack",
+  notification_short: "candidate.variant.notification",
+  firmer_line: "candidate.variant.firm",
+};
+
+function getSelectedAxisLabelKey<T extends string>(options: Array<AxisOption<T>>, selectedId: T): string {
+  return options.find((option) => option.id === selectedId)?.labelKey ?? options[0]?.labelKey ?? "";
+}
 
 const weekDayKeys = ["weekly.sun", "weekly.mon", "weekly.tue", "weekly.wed", "weekly.thu", "weekly.fri", "weekly.sat"] as const;
 const defaultScheduleTime = "21:30";
+const privacyPolicyUrl = `${import.meta.env.BASE_URL}privacy.html`;
 const quickTimeOptions = [
   { id: "morning", time: "08:00", labelKey: "schedule.quick.morning" },
   { id: "lunch", time: "12:30", labelKey: "schedule.quick.lunch" },
@@ -210,6 +337,7 @@ function createPersistedState(state: AppState): AppState {
 export default function App() {
   const platformAdapters = useMemo(() => createMvpPlatformAdapters(), []);
   const messageGeneration = useMemo(() => createMessageGenerationAdapter(), []);
+  const candidateReporting = useMemo(() => createCandidateReportAdapter(), []);
   const [locale, setLocale] = useState<Locale>(() => {
     const stored = platformAdapters.storage.loadLocale();
     return isLocale(stored) ? stored : "ko";
@@ -221,6 +349,7 @@ export default function App() {
     step: 1,
     targetConfirmed: false,
     messageMode: "praise",
+    ...modeAxisDefaults.praise,
     generationContext: "",
     generationStatus: "idle",
     generatedCandidates: [],
@@ -290,6 +419,8 @@ export default function App() {
     index: null,
     draftTime: defaultScheduleTime,
   });
+  const [axisSheetKey, setAxisSheetKey] = useState<AxisKey | null>(null);
+  const axisSheetRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     platformAdapters.storage.saveLocale(locale);
@@ -298,6 +429,45 @@ export default function App() {
   useEffect(() => {
     platformAdapters.storage.setItem("state", JSON.stringify(createPersistedState(state)));
   }, [state, platformAdapters.storage]);
+
+  useEffect(() => {
+    if (!axisSheetKey || typeof document === "undefined") return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const focusableSelector = "button, [href], input, textarea, select, [tabindex]:not([tabindex='-1'])";
+    const focusFirst = () => {
+      const firstFocusable = axisSheetRef.current?.querySelector<HTMLElement>(focusableSelector);
+      firstFocusable?.focus();
+    };
+    focusFirst();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setAxisSheetKey(null);
+        return;
+      }
+      if (event.key !== "Tab" || !axisSheetRef.current) return;
+      const focusable = Array.from(axisSheetRef.current.querySelectorAll<HTMLElement>(focusableSelector))
+        .filter((element) => !element.hasAttribute("disabled"));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, [axisSheetKey]);
 
   const announce = (eventName: string, properties: Record<string, unknown>) => {
     void platformAdapters.analytics.track(eventName, sanitizeAnalytics({ event: eventName, ...properties }));
@@ -309,15 +479,70 @@ export default function App() {
   }, []);
 
   const selectedPreview = state.previewText || i18n.t("preview.fallback");
+  const pendingLineText = (state.selectedPraise || state.rewriteText).trim();
+  const hasPendingLine = Boolean(pendingLineText && pendingLineText !== state.previewText.trim());
+  const schedulePreviewText = pendingLineText || state.previewText;
   const scheduleTimes = getStateScheduleTimes(state);
   const scheduleSummary = formatScheduleSummary(scheduleTimes, locale);
   const rewriteMessage: { message: string; safety: "safe" | "caution" | "blocked" } = (() => {
     const text = state.rewriteText.trim();
     if (!text) return { message: "", safety: "safe" as const };
-    if (blockedKeywords.some((keyword) => text.includes(keyword))) return { message: i18n.t("rewrite.blocked"), safety: "blocked" as const };
-    if (cautionKeywords.some((keyword) => text.includes(keyword)) || text.length < 8) return { message: i18n.t("rewrite.caution"), safety: "caution" as const };
+    const safety = classifyMessageSafety(text);
+    if (safety.level === "blocked") return { message: i18n.t("rewrite.blocked"), safety: "blocked" as const };
+    if (safety.level === "caution") return { message: i18n.t("rewrite.caution"), safety: "caution" as const };
     return { message: "", safety: "safe" as const };
   })();
+  const directMessage = (() => {
+    const text = state.generationContext.trim();
+    if (!text) return { message: "", safety: "safe" as const };
+    const safety = classifyMessageSafety(text);
+    if (safety.level === "blocked") return { message: i18n.t("rewrite.blocked"), safety: "blocked" as const };
+    if (safety.level === "caution") return { message: i18n.t("rewrite.caution"), safety: "caution" as const };
+    return { message: "", safety: "safe" as const };
+  })();
+  const activeMessageMode = state.messageMode === "nag" ? "nag" : "praise";
+  const activeAxisOptions = axisOptionsByMode[activeMessageMode];
+  const axisGroups = state.messageMode === "custom" ? [] : ([
+    {
+      key: "situation" as const,
+      labelKey: axisLabels.situation,
+      selectedId: state.messageSituation,
+      selectedLabelKey: getSelectedAxisLabelKey(activeAxisOptions.situation, state.messageSituation),
+      options: activeAxisOptions.situation,
+    },
+    {
+      key: "feeling" as const,
+      labelKey: axisLabels.feeling,
+      selectedId: state.messageFeeling,
+      selectedLabelKey: getSelectedAxisLabelKey(activeAxisOptions.feeling, state.messageFeeling),
+      options: activeAxisOptions.feeling,
+    },
+    {
+      key: "tone" as const,
+      labelKey: axisLabels.tone,
+      selectedId: state.messageTone,
+      selectedLabelKey: getSelectedAxisLabelKey(activeAxisOptions.tone, state.messageTone),
+      options: activeAxisOptions.tone,
+    },
+    {
+      key: "intensity" as const,
+      labelKey: axisLabels.intensity,
+      selectedId: state.messageIntensity,
+      selectedLabelKey: getSelectedAxisLabelKey(activeAxisOptions.intensity, state.messageIntensity),
+      options: activeAxisOptions.intensity,
+    },
+  ]);
+  const activeAxisGroup = axisGroups.find((group) => group.key === axisSheetKey);
+
+  const chooseAxisValue = (key: AxisKey, id: MessageSituation | MessageFeeling | MessageTone | MessageIntensity) => {
+    setState((current) => {
+      if (key === "situation") return { ...current, messageSituation: id as MessageSituation };
+      if (key === "feeling") return { ...current, messageFeeling: id as MessageFeeling };
+      if (key === "tone") return { ...current, messageTone: id as MessageTone };
+      return { ...current, messageIntensity: id as MessageIntensity };
+    });
+    setAxisSheetKey(null);
+  };
 
   useEffect(() => {
     if (rewriteMessage.safety === "blocked" && (safetyEventRef.current.safety !== "blocked" || safetyEventRef.current.text !== state.rewriteText)) {
@@ -360,6 +585,7 @@ export default function App() {
   };
 
   const generateCandidates = async () => {
+    if (state.messageMode === "custom") return;
     const context = state.generationContext.trim();
     setState((current) => ({
       ...current,
@@ -372,23 +598,60 @@ export default function App() {
       rewriteText: "",
     }));
     announce("ai_generation_requested", { source: state.sourceTag, choice: state.messageMode });
-    const result = await messageGeneration.generate({ mode: state.messageMode, context, locale });
+    const result = await messageGeneration.generate({
+      mode: state.messageMode,
+      context,
+      locale,
+      situation: state.messageSituation,
+      feeling: state.messageFeeling,
+      tone: state.messageTone,
+      intensity: state.messageIntensity,
+      purpose: state.messageMode === "praise" ? "recognize" : "start",
+    });
     if (result.decision === "blocked") {
+      const isUnavailable = result.reasonCode ? aiUnavailableReasonCodes.has(result.reasonCode) : false;
       setState((current) => ({
         ...current,
-        generationStatus: "blocked",
+        generationStatus: isUnavailable ? "error" : "blocked",
         generatedCandidates: [],
       }));
-      announce("ai_generation_blocked", { source: state.sourceTag, choice: state.messageMode, status: result.reasonCode ?? "blocked" });
+      announce(isUnavailable ? "ai_generation_unavailable" : "ai_generation_blocked", { source: state.sourceTag, choice: state.messageMode, status: result.reasonCode ?? "blocked" });
+      return;
+    }
+    if (result.source !== "ai" || result.candidates.length === 0) {
+      setState((current) => ({
+        ...current,
+        generationStatus: "error",
+        generatedCandidates: [],
+      }));
+      announce("ai_generation_unavailable", { source: state.sourceTag, choice: state.messageMode, status: result.reasonCode ?? result.source });
       return;
     }
     setState((current) => ({
       ...current,
-      generationStatus: result.source === "ai" ? "success" : "fallback",
+      generationStatus: "success",
       generatedCandidates: result.candidates,
       aiDisclosureSeen: true,
     }));
     announce("ai_candidates_generated", { source: state.sourceTag, choice: state.messageMode, status: result.source });
+  };
+
+  const commitDirectMessage = () => {
+    const text = state.generationContext.trim();
+    if (!text || directMessage.safety === "blocked") return;
+    setState((current) => ({
+      ...current,
+      selectedCandidateId: null,
+      selectedPraiseId: "custom",
+      selectedPraise: text,
+      selectedNotificationText: text.length > 32 ? `${text.slice(0, 32)}...` : text,
+      rewriteText: text,
+      safetyState: directMessage.safety,
+      generatedCandidates: [],
+      generationStatus: "idle",
+      step: 4,
+    }));
+    announce("direct_message_saved", { source: state.sourceTag, choice: "custom", status: directMessage.safety });
   };
 
   const selectCandidate = (candidate: MessageCandidate) => {
@@ -400,7 +663,7 @@ export default function App() {
       selectedNotificationText: candidate.notificationText,
       rewriteText: candidate.text,
     }));
-    announce("ai_candidate_selected", { source: state.sourceTag, choice: candidate.mode, variant: candidate.style });
+    announce("ai_candidate_selected", { source: state.sourceTag, choice: candidate.mode, variant: candidate.expressionVariant });
   };
 
   const openTimePicker = (index: number | null) => {
@@ -450,6 +713,31 @@ export default function App() {
     const now = Date.now();
     const finalText = state.selectedPraise || state.rewriteText || selectedPreview;
     const timesToSchedule = getStateScheduleTimes(state);
+    if (platformAdapters.notifications.capability === "preview_only") {
+      const newWeeklyCare = getWeekCareArray(state.weeklyCare);
+      setState((current) => ({
+        ...current,
+        previewText: finalText,
+        savedAt: now,
+        vaultItems: current.vaultItems.some((item) => item.text === finalText)
+          ? current.vaultItems
+          : [...current.vaultItems, { id: `v-${now}`, text: finalText, savedAt: now }],
+        step: 4,
+        sessionPhase: "initial",
+        weeklyCare: newWeeklyCare,
+        scheduleTime: timesToSchedule[0] ?? defaultScheduleTime,
+        scheduleTimes: timesToSchedule,
+        notificationStatus: "preview_only",
+        notificationMessage: i18n.t("notification.previewOnly"),
+        generationContext: "",
+        generatedCandidates: [],
+        selectedCandidateId: null,
+        reportedCandidateIds: [],
+      }));
+      announce("reminder_created", { source: state.sourceTag, timeCount: timesToSchedule.length, times: timesToSchedule.join("|"), status: "preview_only" });
+      announce("preview_viewed", { source: state.sourceTag, sourceTag: state.sourceTag });
+      return;
+    }
     const permission = await platformAdapters.notifications.requestPermission();
     let notificationStatus: AppState["notificationStatus"] = permission === "unsupported" ? "unsupported" : permission === "denied" ? "denied" : "prompt";
     let notificationMessage = permission === "unsupported"
@@ -488,6 +776,9 @@ export default function App() {
       ...current,
       previewText: finalText,
       savedAt: now,
+      vaultItems: current.vaultItems.some((item) => item.text === finalText)
+        ? current.vaultItems
+        : [...current.vaultItems, { id: `v-${now}`, text: finalText, savedAt: now }],
       step: 4,
       sessionPhase: "initial",
       weeklyCare: newWeeklyCare,
@@ -516,12 +807,52 @@ export default function App() {
 
   const hasActiveSession = state.savedAt !== null;
   const showAppFlow = state.navTab === "home";
-  const showHome = showAppFlow && hasActiveSession && state.sessionPhase === "initial" && state.step === 4;
+  const showHome = showAppFlow && hasActiveSession && state.sessionPhase === "initial" && state.step === 4 && !hasPendingLine;
   const weekCare = state.weeklyCare.length === 7 ? state.weeklyCare : [0,0,0,0,0,0,0];
   const weekCareCount = countWeekCare(weekCare);
+  const showBackButton = state.navTab !== "home" || (showAppFlow && !showHome && state.step > 1);
+  const showBottomNav = hasActiveSession || state.navTab !== "home" || state.step > 1;
+
+  const handleBack = () => {
+    setState((current) => {
+      if (current.navTab !== "home") return { ...current, navTab: "home" };
+
+      if (current.sessionPhase === "reopened" && current.step === 5) {
+        return { ...current, sessionPhase: "initial", step: 4 };
+      }
+
+      if (current.step === 2) {
+        return {
+          ...current,
+          step: current.savedAt ? 4 : 1,
+          generatedCandidates: [],
+          selectedCandidateId: null,
+          generationStatus: "idle",
+        };
+      }
+
+      if (current.step === 3) return { ...current, step: 2 };
+      if (current.step === 4) return { ...current, step: current.messageMode === "custom" ? 2 : 3 };
+      if (current.step === 6) return { ...current, step: 5 };
+
+      return current;
+    });
+    announce("navigation_back", { source: state.sourceTag, step: state.step, tab: state.navTab });
+  };
 
   return (
-    <main className="app-shell" aria-label={i18n.t("app.aria")}>
+    <main className={`app-shell${showBackButton ? " has-top-back" : ""}${showBottomNav ? " has-bottom-nav" : ""}`} aria-label={i18n.t("app.aria")}>
+      {showBackButton && (
+        <button
+          type="button"
+          className="top-back-button"
+          aria-label={i18n.t("navigation.back")}
+          title={i18n.t("navigation.back")}
+          onClick={handleBack}
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+      )}
       <div className="app-home">
         {/* ────── Progress rail ────── */}
         {showAppFlow && !showHome && (
@@ -678,16 +1009,29 @@ export default function App() {
             <p className="screen-body">{i18n.t("ai.body")}</p>
 
             <div className="button-stack">
-              {(["praise", "nag"] as const).map((mode) => (
+              {messageModes.map((mode) => (
                 <button
                   key={mode}
                   type="button"
-                  className={`pm-choice-card ${mode === "praise" ? "violet" : "coral"}`}
+                  className={`pm-choice-card ${modeCardMeta[mode].className}`}
                   aria-label={i18n.t(`mode.${mode}`)}
                   aria-pressed={state.messageMode === mode}
-                  onClick={() => setState((current) => ({ ...current, messageMode: mode, generatedCandidates: [], selectedCandidateId: null, generationStatus: "idle" }))}
+                  onClick={() => {
+                    setAxisSheetKey(null);
+                    setState((current) => ({
+                      ...current,
+                      ...(mode === "custom" ? {} : modeAxisDefaults[mode]),
+                      messageMode: mode,
+                      generatedCandidates: [],
+                      selectedCandidateId: null,
+                      selectedPraise: "",
+                      selectedNotificationText: "",
+                      rewriteText: "",
+                      generationStatus: "idle",
+                    }));
+                  }}
                 >
-                  <span className="choice-card-icon" aria-hidden="true">{mode === "praise" ? "💜" : "⚡"}</span>
+                  <span className="choice-card-icon" aria-hidden="true">{modeCardMeta[mode].icon}</span>
                   <span className="choice-card-body">
                     <span className="choice-card-title">{i18n.t(`mode.${mode}`)}</span>
                     <span className="choice-card-sub">{i18n.t(`mode.${mode}Sub`)}</span>
@@ -697,42 +1041,125 @@ export default function App() {
               ))}
             </div>
 
+            {state.messageMode !== "custom" && (
+              <div className="axis-panel" aria-label={i18n.t("axis.title")}>
+                {axisGroups.map((group) => (
+                  <button
+                    key={group.key}
+                    type="button"
+                    className="axis-summary-button"
+                    onClick={() => setAxisSheetKey(group.key)}
+                  >
+                    <span className="axis-summary-label">{i18n.t(group.labelKey)}</span>
+                    <span className="axis-summary-value">{i18n.t(group.selectedLabelKey)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {activeAxisGroup && (
+              <div className="axis-sheet-backdrop" onClick={() => setAxisSheetKey(null)}>
+                <div
+                  ref={axisSheetRef}
+                  className="axis-sheet"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={i18n.t("axis.dialogTitle", { axis: i18n.t(activeAxisGroup.labelKey) })}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <div className="axis-sheet-head">
+                    <h3>{i18n.t("axis.dialogTitle", { axis: i18n.t(activeAxisGroup.labelKey) })}</h3>
+                    <button type="button" className="axis-sheet-close" aria-label={i18n.t("axis.close")} onClick={() => setAxisSheetKey(null)}>×</button>
+                  </div>
+                  <div className="axis-option-grid">
+                    {activeAxisGroup.options.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        aria-label={i18n.t(option.labelKey)}
+                        className={`axis-option-card${activeAxisGroup.selectedId === option.id ? " is-selected" : ""}`}
+                        aria-pressed={activeAxisGroup.selectedId === option.id}
+                        onClick={() => chooseAxisValue(activeAxisGroup.key, option.id)}
+                      >
+                        <span>{i18n.t(option.labelKey)}</span>
+                        {option.descKey && <small>{i18n.t(option.descKey)}</small>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="textarea-card">
               <textarea
-                aria-label={i18n.t("ai.inputLabel")}
+                aria-label={state.messageMode === "custom" ? i18n.t("custom.inputLabel") : i18n.t("ai.inputLabel")}
                 value={state.generationContext}
                 onChange={(event) => setState((current) => ({ ...current, generationContext: event.target.value.slice(0, 120) }))}
-                placeholder={state.messageMode === "praise" ? i18n.t("ai.praisePlaceholder") : i18n.t("ai.nagPlaceholder")}
+                placeholder={state.messageMode === "custom"
+                  ? i18n.t("custom.placeholder")
+                  : state.messageMode === "praise" ? i18n.t("ai.praisePlaceholder") : i18n.t("ai.nagPlaceholder")}
               />
-              <span className="textarea-helper">{i18n.t("ai.inputHelper", { count: state.generationContext.length })}</span>
+              <span className="textarea-helper">
+                {state.messageMode === "custom" ? i18n.t("custom.helper", { count: state.generationContext.length }) : i18n.t("ai.inputHelper", { count: state.generationContext.length })}
+              </span>
             </div>
 
-            <div className="settings-card">
-              <span className="preview-badge">{i18n.t("ai.disclosureBadge")}</span>
-              <p className="settings-note">{i18n.t("ai.disclosure")}</p>
-            </div>
+            {state.messageMode !== "custom" && (
+              <div className="settings-card">
+                <span className="preview-badge">{i18n.t("ai.disclosureBadge")}</span>
+                <p className="settings-note">{i18n.t("ai.disclosure")}</p>
+                <p className="settings-note">{i18n.t("privacy.localNotice")}</p>
+              </div>
+            )}
+
+            {state.messageMode === "custom" && (
+              <div className="settings-card">
+                <span className="preview-badge">{i18n.t("custom.badge")}</span>
+                <p className="settings-note">{i18n.t("custom.body")}</p>
+                <p className="settings-note">{i18n.t("privacy.localNotice")}</p>
+              </div>
+            )}
 
             {state.generationStatus === "blocked" && (
               <p className="safety-message blocked">{i18n.t("ai.blocked")}</p>
             )}
 
-            <button
-              type="button"
-              className="pm-primary-cta"
-              disabled={state.generationStatus === "loading"}
-              onClick={generateCandidates}
-            >
-              {state.generationStatus === "loading" ? i18n.t("ai.generating") : i18n.t("ai.generate")}
-            </button>
+            {state.generationStatus === "error" && (
+              <p className="safety-message caution">{i18n.t("ai.unavailable")}</p>
+            )}
+
+            {state.messageMode === "custom" && directMessage.message && (
+              <p className={`safety-message ${directMessage.safety}`}>{directMessage.message}</p>
+            )}
+
+            {state.messageMode === "custom" ? (
+              <button
+                type="button"
+                className="pm-primary-cta"
+                disabled={!state.generationContext.trim() || directMessage.safety === "blocked"}
+                onClick={commitDirectMessage}
+              >
+                {i18n.t("custom.continue")}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="pm-primary-cta"
+                disabled={state.generationStatus === "loading"}
+                onClick={generateCandidates}
+              >
+                {state.generationStatus === "loading" ? i18n.t("ai.generating") : i18n.t("ai.generate")}
+              </button>
+            )}
 
             {state.generatedCandidates.length > 0 && (
               <div className="button-stack">
                 {state.generatedCandidates.map((candidate) => (
-                  <div key={candidate.id} className={`candidate-card ${candidate.style}`}>
+                  <div key={candidate.id} className={`candidate-card ${candidate.expressionVariant}`}>
                     <span className="preview-badge">
                       {candidate.source === "ai" ? i18n.t("ai.candidateLabel") : i18n.t("ai.fallbackLabel")}
                     </span>
-                    <span className="candidate-style">{i18n.t(candidateStyleKeys[candidate.style] ?? "candidate.style.warm")}</span>
+                    <span className="candidate-variant">{i18n.t(candidateVariantKeys[candidate.expressionVariant])}</span>
                     <button
                       type="button"
                       className="candidate-select"
@@ -746,7 +1173,16 @@ export default function App() {
                       className="pm-text-action"
                       onClick={() => {
                         setState((current) => ({ ...current, reportedCandidateIds: [...new Set([...current.reportedCandidateIds, candidate.id])] }));
-                        announce("ai_candidate_reported", { source: state.sourceTag, choice: candidate.mode, variant: candidate.style });
+                        announce("ai_candidate_reported", { source: state.sourceTag, choice: candidate.mode, variant: candidate.expressionVariant });
+                        void candidateReporting.report({
+                          candidateId: candidate.id,
+                          mode: candidate.mode,
+                          expressionVariant: candidate.expressionVariant,
+                          source: candidate.source,
+                          locale,
+                          surface: "candidate_card",
+                          reasonCode: "uncomfortable",
+                        });
                       }}
                     >
                       {i18n.t("ai.report")}
@@ -759,14 +1195,16 @@ export default function App() {
               </div>
             )}
 
-            <button
-              type="button"
-              className="pm-primary-cta"
-              disabled={!state.selectedCandidateId}
-              onClick={() => { setState((current) => ({ ...current, step: 3 })); }}
-            >
-              {i18n.t("ai.continue")}
-            </button>
+            {state.messageMode !== "custom" && (
+              <button
+                type="button"
+                className="pm-primary-cta"
+                disabled={!state.selectedCandidateId}
+                onClick={() => { setState((current) => ({ ...current, step: 3 })); }}
+              >
+                {i18n.t("ai.continue")}
+              </button>
+            )}
           </section>
         )}
 
@@ -987,10 +1425,10 @@ export default function App() {
                   {state.notificationMessage}
                 </p>
               )}
-              {state.previewText ? (
+              {schedulePreviewText ? (
                 <>
                   <span className="preview-badge">{i18n.t("schedule.previewBadge")}</span>
-                  <p className="preview-sentence">{selectedPreview}</p>
+                  <p className="preview-sentence">{schedulePreviewText}</p>
                   <p className="preview-note">{i18n.t("schedule.previewNote")}</p>
                 </>
               ) : (
@@ -1025,11 +1463,14 @@ export default function App() {
                 className="pm-choice-card green"
                 aria-pressed={state.checkinAction === "keep"}
                 onClick={() => {
-                  const newVault: VaultItem[] = [...state.vaultItems, {
-                    id: `v-${Date.now()}`,
-                    text: state.selectedPraise,
-                    savedAt: Date.now(),
-                  }];
+                  const now = Date.now();
+                  const newVault: VaultItem[] = state.vaultItems.some((item) => item.text === state.selectedPraise)
+                    ? state.vaultItems
+                    : [...state.vaultItems, {
+                      id: `v-${now}`,
+                      text: state.selectedPraise,
+                      savedAt: now,
+                    }];
                   const newWeeklyCare = getWeekCareArray(state.weeklyCare);
                   setState((current) => ({
                     ...current,
@@ -1199,13 +1640,18 @@ export default function App() {
         )}
       </div>
 
-      {/* ────── Bottom Navigation (shown on home and tabs) ────── */}
-      {(showHome || state.navTab === "vault" || state.navTab === "settings") && (
+      {/* ────── Bottom Navigation ────── */}
+      {showBottomNav && (
         <nav className="bottom-nav" aria-label="Main navigation">
           <button
             type="button"
             className={`nav-item${state.navTab === "home" ? " active" : ""}`}
-            onClick={() => setState((current) => ({ ...current, navTab: "home" }))}
+            onClick={() => setState((current) => ({
+              ...current,
+              navTab: "home",
+              sessionPhase: "initial",
+              step: current.savedAt ? 4 : 1,
+            }))}
           >
             <span className="nav-icon">🏠</span>
             {i18n.t("nav.home")}
@@ -1312,6 +1758,29 @@ export default function App() {
               <span>{i18n.t("settings.savedTime")}</span>
               <strong>{scheduleSummary}</strong>
             </div>
+          </div>
+
+          <div className="settings-card">
+            <div>
+              <h3>{i18n.t("privacy.title")}</h3>
+              <p>{i18n.t("privacy.body")}</p>
+            </div>
+            <p className="settings-note">{i18n.t("privacy.localNotice")}</p>
+            <a className="pm-secondary-cta" href={privacyPolicyUrl} target="_blank" rel="noreferrer">
+              {i18n.t("privacy.openPolicy")}
+            </a>
+            <button
+              type="button"
+              className="pm-secondary-cta"
+              onClick={() => {
+                platformAdapters.storage.clearAll();
+                setLocale("ko");
+                setState(createDefaultState());
+                announce("local_data_cleared", { source: state.sourceTag });
+              }}
+            >
+              {i18n.t("privacy.clearLocal")}
+            </button>
           </div>
 
           <div className="settings-card">
